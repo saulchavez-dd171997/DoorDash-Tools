@@ -1,2 +1,0 @@
-# DoorDash-Tools
-DoorDash Tools
