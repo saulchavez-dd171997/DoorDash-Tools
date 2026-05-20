@@ -1,0 +1,13 @@
+AM Floor-Ready Quest - Instrucciones de uso
+
+1. Descarga el archivo am_floor_ready_quest_v3.html en tu computador.
+2. Abre el archivo con Google Chrome, Microsoft Edge o Safari.
+3. Completa las actividades: flashcards, memoria, quiz, rejection dojo, scorecards, campaign lab, call flow y readiness scorecard.
+4. Tu progreso se guarda solo en tu navegador, no se sincroniza con otras personas.
+5. Al finalizar, copia el resumen para TL o toma una captura/PDF para compartir tus fortalezas, dudas y areas de coaching.
+
+Notas importantes:
+- No necesitas instalar nada.
+- Si el archivo se abre como texto, usa clic derecho > Open with > Chrome/Edge/Safari.
+- Si lo recibes por Slack, Gmail o Drive, primero descargalo; no lo uses desde la vista previa.
+- Esta herramienta no reemplaza el Playbook ni Training Week. Es para practicar y llegar al floor con mayor claridad.
