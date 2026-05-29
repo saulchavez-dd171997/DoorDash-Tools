@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DoorDash Daily Average Spend Calculator</title>
+<style>
+:root{--bg:#f7f8f6;--ink:#121414;--muted:#66706b;--line:#dfe6e1;--dash:#00a082;--dash-dark:#007965;--dash-soft:#dff7f0;--shadow:0 22px 60px rgba(17,24,20,.13)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(circle at top left,rgba(0,160,130,.16),transparent 34%),linear-gradient(135deg,#fbfcfb 0%,var(--bg) 52%,#e9f7f2 100%);display:grid;place-items:center;padding:28px}
+.tool{width:min(1120px,100%);background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.9);border-radius:30px;box-shadow:var(--shadow);overflow:hidden}
+header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:24px clamp(22px,4vw,44px);border-bottom:1px solid var(--line);background:rgba(255,255,255,.72);backdrop-filter:blur(14px)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:-.03em}.logo{width:38px;height:38px;border-radius:14px;display:grid;place-items:center;background:var(--dash);color:#fff;font-weight:950;box-shadow:0 12px 28px rgba(0,160,130,.28)}
+.pill{border:1px solid var(--line);border-radius:999px;padding:10px 14px;color:var(--muted);font-weight:800;font-size:13px;background:#fff}
+main{display:grid;grid-template-columns:.9fr 1.1fr;gap:28px;padding:clamp(24px,5vw,56px);align-items:center}
+h1{margin:0;font-size:clamp(42px,6vw,74px);line-height:.95;letter-spacing:-.075em}
+p{margin:18px 0 0;color:var(--muted);font-size:clamp(18px,2vw,23px);line-height:1.38}
+.formula{margin-top:28px;padding:22px;border-radius:24px;background:var(--dash-soft);border:1px solid #b9ece0;color:var(--dash-dark);font-weight:900;font-size:clamp(20px,2.6vw,34px);letter-spacing:-.04em}
+.calculator{background:#fff;border:1px solid var(--line);border-radius:30px;padding:clamp(22px,4vw,34px);box-shadow:0 16px 38px rgba(0,0,0,.07)}
+.inputGroup{margin-bottom:24px}label{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-weight:850;margin-bottom:10px}.value{color:var(--dash-dark);font-weight:950}
+input[type=number]{width:100%;padding:18px;border-radius:18px;border:1px solid var(--line);font:inherit;font-weight:850;font-size:28px;outline:none;background:#fbfdfc}
+input[type=number]:focus{border-color:var(--dash);box-shadow:0 0 0 4px rgba(0,160,130,.12)}input[type=range]{width:100%;margin-top:14px;accent-color:var(--dash)}
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}.card{border-radius:22px;border:1px solid var(--line);background:#f7fbf9;padding:20px;min-height:142px}.card small{display:block;color:var(--muted);font-weight:850;margin-bottom:10px}.card strong{display:block;font-size:clamp(28px,4vw,42px);letter-spacing:-.055em;color:var(--ink)}.card.highlight{background:var(--dash-soft);border-color:#b9ece0}
+.note{margin-top:22px;padding:18px;border-radius:20px;background:#fff;border:1px dashed var(--line);color:var(--muted);font-size:15px;line-height:1.45}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+button{border:0;border-radius:999px;padding:13px 18px;font-weight:900;cursor:pointer;background:var(--ink);color:#fff;box-shadow:0 12px 22px rgba(18,20,20,.16)}button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+@media(max-width:860px){body{padding:14px}header{align-items:flex-start}.pill{display:none}main{grid-template-columns:1fr}.results{grid-template-columns:1fr}}
+@media print{body{background:#fff;padding:0}.tool{box-shadow:none;border-radius:0}button,input[type=range]{display:none}}
+</style>
+</head>
+<body>
+<section class="tool">
+<header><div class="brand"><div class="logo">D</div><span>Daily Average Spend Calculator</span></div><div class="pill">Sponsored Listings · Budget Tool</div></header>
+<main>
+<section><h1>Calculate daily ad spend limits</h1><p>Enter the merchant's weekly budget to calculate daily spend, the 2x daily cap, and monthly spend. Monthly spend is always calculated from the daily average.</p><div class="formula">Weekly budget ÷ 7 = Daily spend</div></section>
+<section class="calculator" aria-label="Daily average spend calculator">
+<div class="inputGroup"><label for="weeklyBudget"><span>Weekly budget</span><span class="value" id="budgetLabel">CA$70</span></label><input id="weeklyBudget" type="number" min="0" step="1" value="70" inputmode="decimal" oninput="syncFromNumber()" /><input id="budgetRange" type="range" min="0" max="1000" step="5" value="70" oninput="syncFromRange()" /></div>
+<div class="inputGroup"><label for="costPerOrder"><span>Bidding / Cost per order</span><span class="value" id="bidLabel">CA$5</span></label><input id="costPerOrder" type="number" min="0.01" step="0.50" value="5" inputmode="decimal" oninput="syncBidFromNumber()" /><input id="bidRange" type="range" min="1" max="50" step="0.50" value="5" oninput="syncBidFromRange()" /></div>
+<div class="results"><div class="card highlight"><small>Daily spend</small><strong id="dailySpend">CA$10.00</strong></div><div class="card"><small>2x Daily cap</small><strong id="twoXCap">CA$20.00</strong></div><div class="card"><small>Monthly spend</small><strong id="monthlySpend">CA$304.00</strong></div></div>
+<div class="note"><p id="dailyOrdersText">At CA$5/order, about 2 ad orders can reach the daily spend.</p><p id="capOrdersText" style="margin-top:10px">At CA$5/order, about 4 ad orders can reach the daily cap if there is too much traffic.</p><p style="margin-top:10px">Monthly spend is always calculated with the daily average: <b>daily spend × 30.4</b>. It never uses the 2x daily cap.</p></div>
+<div class="actions"><button onclick="copyResults()">Copy results</button><button class="secondary" onclick="resetCalculator()">Reset</button></div>
+</section>
+</main>
+</section>
+<script>
+const weeklyBudget=document.getElementById('weeklyBudget');const budgetRange=document.getElementById('budgetRange');const costPerOrder=document.getElementById('costPerOrder');const bidRange=document.getElementById('bidRange');
+function money(value){return 'CA$'+Number(value||0).toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function updateCalc(){const weekly=Math.max(0,Number(weeklyBudget.value)||0);const bid=Math.max(.01,Number(costPerOrder.value)||.01);const daily=weekly/7;const cap=daily*2;const monthly=daily*30.4;const dailyOrders=Math.max(0,Math.floor(daily/bid));const capOrders=Math.max(0,Math.floor(cap/bid));document.getElementById('budgetLabel').textContent=money(weekly).replace('.00','');document.getElementById('bidLabel').textContent=money(bid).replace('.00','');document.getElementById('dailySpend').textContent=money(daily);document.getElementById('twoXCap').textContent=money(cap);document.getElementById('monthlySpend').textContent=money(monthly);document.getElementById('dailyOrdersText').textContent='At '+money(bid).replace('.00','')+'/order, about '+dailyOrders+' ad order'+(dailyOrders===1?'':'s')+' can reach the daily spend.';document.getElementById('capOrdersText').textContent='At '+money(bid).replace('.00','')+'/order, about '+capOrders+' ad order'+(capOrders===1?'':'s')+' can reach the daily cap if there is too much traffic.';}
+function syncFromNumber(){const value=Math.max(0,Number(weeklyBudget.value)||0);budgetRange.max=Math.max(1000,Math.ceil(value/100)*100);budgetRange.value=value;updateCalc();}
+function syncFromRange(){weeklyBudget.value=budgetRange.value;updateCalc();}
+function syncBidFromNumber(){const value=Math.max(.01,Number(costPerOrder.value)||.01);bidRange.max=Math.max(50,Math.ceil(value/10)*10);bidRange.value=value;updateCalc();}
+function syncBidFromRange(){costPerOrder.value=bidRange.value;updateCalc();}
+function resetCalculator(){weeklyBudget.value=70;budgetRange.max=1000;budgetRange.value=70;costPerOrder.value=5;bidRange.max=50;bidRange.value=5;updateCalc();}
+async function copyResults(){const text=['DoorDash Sponsored Listings Budget Calculation','Weekly budget: '+document.getElementById('budgetLabel').textContent,'Bidding / Cost per order: '+document.getElementById('bidLabel').textContent,'Daily spend: '+document.getElementById('dailySpend').textContent,'2x Daily cap: '+document.getElementById('twoXCap').textContent,'Monthly spend: '+document.getElementById('monthlySpend').textContent,document.getElementById('dailyOrdersText').textContent,document.getElementById('capOrdersText').textContent,'Monthly spend is ALWAYS calculated using daily spend x 30.4, not the 2x daily cap.'].join('\n');try{await navigator.clipboard.writeText(text);alert('Results copied.');}catch(error){alert(text);}}
+updateCalc();
+</script>
+</body>
+</html>
