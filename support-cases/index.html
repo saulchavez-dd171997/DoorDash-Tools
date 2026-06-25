@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DoorDash Account Manager Support Cases Assessment</title>
+  <style>
+    :root{
+      --dd-red:#eb1700;
+      --dd-red-dark:#b91400;
+      --dd-red-soft:#fff1ef;
+      --bg:#f7f7f8;
+      --bg2:#ffffff;
+      --card:#ffffff;
+      --ink:#191919;
+      --muted:#62666d;
+      --line:#e6e7ea;
+      --soft:#f1f2f4;
+      --success:#0b7a42;
+      --success-soft:#eaf7f0;
+      --warning:#9a6500;
+      --warning-soft:#fff6df;
+      --danger:#b42318;
+      --danger-soft:#fff0ef;
+      --shadow:0 18px 50px rgba(25,25,25,.08);
+      --shadow2:0 8px 22px rgba(25,25,25,.08);
+      --radius:24px;
+      --radius-sm:16px;
+      --font:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      --mono:"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    [data-theme="dark"]{
+      --bg:#0f1115;
+      --bg2:#13161d;
+      --card:#191d25;
+      --ink:#f5f5f6;
+      --muted:#b5bac3;
+      --line:#303542;
+      --soft:#222733;
+      --dd-red-soft:#331412;
+      --success-soft:#0d2d20;
+      --warning-soft:#312613;
+      --danger-soft:#351413;
+      --shadow:0 18px 55px rgba(0,0,0,.34);
+      --shadow2:0 10px 25px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:
+        radial-gradient(circle at 10% -10%, rgba(235,23,0,.16), transparent 24rem),
+        radial-gradient(circle at 90% 0%, rgba(235,23,0,.08), transparent 22rem),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+      color:var(--ink);
+      line-height:1.5;
+      min-height:100vh;
+    }
+    a{color:var(--dd-red)}
+    button,input,select,textarea{font:inherit}
+    .page{width:min(1180px, calc(100% - 32px));margin:0 auto;padding:28px 0 72px}
+    .hero{
+      border:1px solid var(--line);
+      border-radius:32px;
+      background:linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,241,239,.82));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+      padding:clamp(28px,5vw,58px);
+    }
+    [data-theme="dark"] .hero{background:linear-gradient(135deg, rgba(25,29,37,.94), rgba(51,20,18,.7));}
+    .hero:after{
+      content:"";
+      position:absolute;
+      right:-120px;top:-120px;
+      width:320px;height:320px;border-radius:50%;
+      background:rgba(235,23,0,.12);
+      border:1px solid rgba(235,23,0,.22);
+      pointer-events:none;
+    }
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:18px;position:relative;z-index:1}
+    .dashmark{width:38px;height:22px;border-radius:16px;background:var(--dd-red);position:relative;box-shadow:0 8px 20px rgba(235,23,0,.24)}
+    .dashmark:after{content:"";position:absolute;right:5px;top:6px;width:18px;height:10px;border-radius:999px;background:var(--bg2)}
+    .eyebrow{font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:var(--dd-red)}
+    h1{font-size:clamp(2.3rem,6vw,5.2rem);line-height:.95;letter-spacing:-.06em;margin:0 0 14px;position:relative;z-index:1;max-width:930px}
+    .subtitle{font-size:clamp(1rem,1.9vw,1.22rem);color:var(--muted);max-width:900px;margin:0;position:relative;z-index:1}
+    .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;position:relative;z-index:1}
+    .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.7);border-radius:999px;padding:.62rem .82rem;font-weight:800;font-size:.86rem;color:var(--ink)}
+    [data-theme="dark"] .pill{background:rgba(255,255,255,.05)}
+    .pill.red{background:var(--dd-red-soft);border-color:rgba(235,23,0,.24);color:var(--dd-red)}
+    .topbar{position:sticky;top:0;z-index:30;margin:18px 0 22px;padding:10px;border:1px solid var(--line);border-radius:0 0 22px 22px;background:rgba(247,247,248,.86);backdrop-filter:blur(14px);box-shadow:0 12px 26px rgba(25,25,25,.06);display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+    [data-theme="dark"] .topbar{background:rgba(15,17,21,.86)}
+    .nav{display:flex;gap:8px;overflow:auto;scrollbar-width:thin}
+    .nav a,.nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;border-radius:999px;padding:.56rem .72rem;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;cursor:pointer}
+    .nav a:hover,.nav button:hover{border-color:rgba(235,23,0,.55);color:var(--dd-red)}
+    .btn{border:0;border-radius:999px;background:var(--ink);color:var(--bg2);padding:.82rem 1.05rem;font-weight:900;cursor:pointer;box-shadow:var(--shadow2);transition:.16s ease;white-space:nowrap}
+    [data-theme="dark"] .btn{background:#f5f5f6;color:#121212}
+    .btn:hover{transform:translateY(-1px)}
+    .btn.red{background:var(--dd-red);color:white}
+    .btn.secondary{background:var(--card);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+    .btn.danger{background:var(--danger);color:white}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .grid{display:grid;gap:18px}
+    .grid.two{grid-template-columns:1fr 1fr}
+    .grid.three{grid-template-columns:repeat(3,1fr)}
+    .section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(20px,3.5vw,34px);box-shadow:var(--shadow2);margin:20px 0}
+    .section h2{font-size:clamp(1.5rem,3vw,2.3rem);line-height:1.05;letter-spacing:-.04em;margin:0 0 10px}
+    .section p.lede{color:var(--muted);margin:0;max-width:850px}
+    .field{display:grid;gap:7px;font-size:.78rem;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    input,select,textarea{border:1px solid var(--line);border-radius:14px;background:var(--bg2);color:var(--ink);padding:.82rem .9rem;outline:none;width:100%}
+    [data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#11141a}
+    textarea{min-height:110px;resize:vertical;text-transform:none;letter-spacing:0;font-weight:500}
+    .notice{border:1px dashed rgba(235,23,0,.32);background:var(--dd-red-soft);border-radius:18px;padding:15px 16px;color:var(--muted)}
+    .notice b{color:var(--ink)}
+    .progress-wrap{display:grid;gap:8px;margin-top:18px}
+    .progress-label{display:flex;justify-content:space-between;color:var(--muted);font-weight:900;font-size:.85rem}
+    .bar{height:12px;background:var(--soft);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+    .bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--dd-red),#ff6a55);border-radius:999px;transition:width .25s ease}
+    .qnav{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+    .qnav a{width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:50%;display:grid;place-items:center;text-decoration:none;color:var(--muted);font-weight:900;font-size:.78rem}
+    .qnav a.answered{background:var(--dd-red-soft);border-color:rgba(235,23,0,.28);color:var(--dd-red)}
+    .qnav a.flag{box-shadow:0 0 0 2px var(--danger-soft) inset;border-color:rgba(180,35,24,.4)}
+    .question{border:1px solid var(--line);border-radius:22px;background:var(--bg2);padding:22px;margin:18px 0;box-shadow:0 4px 16px rgba(25,25,25,.04);position:relative;scroll-margin-top:92px}
+    [data-theme="dark"] .question{background:#151922}
+    .qhead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}
+    .qmeta{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+    .chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--soft);color:var(--muted);border-radius:999px;padding:.28rem .52rem;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+    .chip.red{background:var(--dd-red-soft);color:var(--dd-red);border-color:rgba(235,23,0,.24)}
+    .chip.warn{background:var(--warning-soft);color:var(--warning);border-color:rgba(154,101,0,.24)}
+    .chip.danger{background:var(--danger-soft);color:var(--danger);border-color:rgba(180,35,24,.24)}
+    .qtitle{font-size:1.13rem;font-weight:850;letter-spacing:-.015em;margin:0 0 16px}
+    .options{display:grid;gap:10px}
+    .option{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:14px 15px;cursor:pointer;display:flex;gap:10px;align-items:flex-start;transition:.15s ease;color:var(--ink)}
+    .option:hover{border-color:rgba(235,23,0,.45);transform:translateY(-1px)}
+    .option input{width:18px;min-width:18px;margin-top:3px;accent-color:var(--dd-red)}
+    .option.selected{border-color:rgba(235,23,0,.55);background:var(--dd-red-soft)}
+    .option.correct{border-color:rgba(11,122,66,.45);background:var(--success-soft)}
+    .option.wrong{border-color:rgba(180,35,24,.45);background:var(--danger-soft)}
+    .match-table{display:grid;gap:10px}
+    .match-row{display:grid;grid-template-columns:1fr 1.25fr;gap:10px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--card)}
+    .prompt{font-weight:850}
+    .order-list{display:grid;gap:10px}
+    .order-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--card)}
+    .num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--dd-red-soft);color:var(--dd-red);font-weight:900}
+    .move{display:flex;gap:5px}
+    .iconbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg2);color:var(--ink);cursor:pointer;font-weight:900}
+    .locked{opacity:.95}
+    .feedback{display:none;margin-top:14px;border-radius:16px;padding:13px 14px;border:1px dashed var(--line);background:var(--soft);color:var(--muted)}
+    .feedback.show{display:block}
+    .results{display:none}
+    .results.show{display:block}
+    .score-hero{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center}
+    .score-circle{width:148px;height:148px;border-radius:50%;display:grid;place-items:center;background:var(--dd-red);color:white;box-shadow:0 18px 45px rgba(235,23,0,.22);font-size:2.45rem;font-weight:950;letter-spacing:-.07em}
+    .score-circle small{font-size:1rem;letter-spacing:0}
+    .band{font-size:1.35rem;font-weight:950;letter-spacing:-.03em;margin:0 0 6px}
+    .breakdown{display:grid;gap:10px;margin-top:18px}
+    .brow{display:grid;grid-template-columns:180px 1fr auto;gap:10px;align-items:center}
+    .bbar{height:10px;background:var(--soft);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+    .bbar span{display:block;height:100%;background:var(--dd-red);width:0}
+    .review{display:grid;gap:10px;margin-top:16px}
+    .review-item{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--bg2)}
+    [data-theme="dark"] .review-item{background:#151922}
+    .review-item.good{border-color:rgba(11,122,66,.35)}
+    .review-item.bad{border-color:rgba(180,35,24,.35)}
+    .reportbox{font-family:var(--mono);font-size:.82rem;white-space:pre-wrap}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(15px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg2);border-radius:999px;padding:.75rem 1rem;font-weight:900;box-shadow:var(--shadow);z-index:60;transition:.22s ease}
+    [data-theme="dark"] .toast{background:#f5f5f6;color:#111}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .foot{color:var(--muted);font-size:.9rem;text-align:center;margin-top:22px}
+    @media (max-width: 860px){.topbar{grid-template-columns:1fr}.grid.two,.grid.three{grid-template-columns:1fr}.score-hero{grid-template-columns:1fr}.match-row{grid-template-columns:1fr}.brow{grid-template-columns:1fr}.page{width:min(100% - 20px,1180px)}}
+    @media print{.topbar,.btn,.qnav,.toast{display:none!important}body{background:white}.section,.hero,.question{box-shadow:none;break-inside:avoid}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero" id="top">
+      <div class="brand"><span class="dashmark" aria-hidden="true"></span><span><span class="eyebrow">Movate Costa Rica · DoorDash Account Management</span></span></div>
+      <h1>DoorDash Account Manager Support Cases Assessment</h1>
+      <p class="subtitle">Intermediate-difficult case routing exam for active merchants: taxonomy, missing info, documentation, follow-up, and closure discipline.</p>
+      <div class="hero-meta">
+        <span class="pill red">Module 2 · Support Cases</span>
+        <span class="pill">30 questions</span>
+        <span class="pill">30–45 minutes</span>
+        <span class="pill">Passing threshold: 80+</span>
+        <span class="pill">Fictional merchants only</span>
+      </div>
+    </header>
+
+    <div class="topbar">
+      <nav class="nav" aria-label="Page navigation">
+        <a href="#profile">Profile</a>
+        <a href="#questions">Questions</a>
+        <a href="#results">Results</a>
+        <button type="button" id="themeToggle">Dark mode</button>
+      </nav>
+      <div style="display:flex;gap:8px;align-items:center;overflow:auto">
+        <span class="pill">Answered <b id="answeredCount">0/30</b></span>
+        <span class="pill">Score <b id="scorePill">—</b></span>
+        <button class="btn secondary" id="printBtn" type="button">Print / PDF</button>
+      </div>
+    </div>
+
+    <main>
+      <section class="section" id="profile">
+        <h2>Attempt profile</h2>
+        <p class="lede">The registered result should be the first completed attempt from this browser. Once finalized, this file locks the local attempt and generates the coaching report for email.</p>
+        <div class="grid three" style="margin-top:18px">
+          <label class="field">Account Manager name<input id="amName" placeholder="Full name" autocomplete="name"></label>
+          <label class="field">Cohort<input id="cohort" placeholder="Training cohort / wave"></label>
+          <label class="field">Trainer<input id="trainer" placeholder="Trainer or Team Lead"></label>
+          <label class="field">Date<input id="attemptDate" type="date"></label>
+          <label class="field">Module<input value="Support Cases" disabled></label>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-label"><span>Completion progress</span><span id="progressText">0%</span></div>
+          <div class="bar"><span id="progressBar"></span></div>
+        </div>
+        <div id="qnav" class="qnav"></div>
+      </section>
+
+      <section class="section" id="questions">
+        <h2>Assessment questions</h2>
+        <p class="lede">Answer all questions. Some questions use matching and scenario decisions instead of only standard multiple choice to measure job judgment, not memorization.</p>
+        <div id="questionsWrap"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+          <button class="btn red" id="finalizeBtn" type="button">Finalize assessment</button>
+          <button class="btn secondary" id="saveBtn" type="button">Save progress</button>
+          <button class="btn secondary" id="clearBtn" type="button">Clear local progress</button>
+        </div>
+      </section>
+
+      <section class="section results" id="results">
+        <h2>Final result and coaching report</h2>
+        <div id="resultSummary"></div>
+        <div id="breakdown" class="breakdown"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:20px 0">
+          <button class="btn red" id="emailBtn" type="button">Submit results</button>
+          <button class="btn secondary" id="copyBtn" type="button">Copy full report</button>
+          <button class="btn secondary" id="downloadBtn" type="button">Download .txt report</button>
+          <button class="btn secondary" id="jsonBtn" type="button">Download data file</button>
+        </div>
+        <div class="notice" style="margin-bottom:14px">Direct submission works after a Google Apps Script web address is configured. Until then, the button opens a prefilled email and copies the full backup report.</div>
+        <label class="field">Backup full report<textarea id="reportBox" class="reportbox" readonly></textarea></label>
+        <div id="review" class="review"></div>
+      </section>
+    </main>
+    <footer class="foot">Internal training assessment for active merchant account management. Validate process updates with official resources before using results for coaching decisions.</footer>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<script>
+const moduleData = {"slug":"support_cases","module":"Module 2 · Support Cases","moduleShort":"Support Cases","title":"DoorDash Account Manager Support Cases Assessment","subtitle":"Intermediate-difficult case routing exam for active merchants: taxonomy, missing info, documentation, follow-up, and closure discipline.","questions":[{"id":"S01","type":"single","section":"Taxonomy Classification","stem":"A fictional active merchant wants to update regular operating hours for one store. Which category is best?","options":["Account settings → Store Hours","Merchant portal → tools explanation","Deactivation → Temporary","Order Protocol → Online issues"],"correct":0,"feedback":"Store hours are profile/configuration updates, so this belongs under Account settings.","tags":["Case category","Account settings"],"critical":false},{"id":"S02","type":"single","section":"Taxonomy Classification","stem":"One store needs its customer-facing phone number corrected. Which category is best?","options":["Bulk Update → Phone number","Account settings → Phone number","Merchant portal → Login credential request","Payment → Payment reporting"],"correct":1,"feedback":"A single-store phone update belongs under Account settings → Phone number.","tags":["Case category","Account settings"],"critical":false},{"id":"S03","type":"single","section":"Taxonomy Classification","stem":"The same phone number needs to be updated across 18 stores. Which category is best?","options":["Account settings → Phone number","Bulk Update → Phone number","Growth → Add locations","Store Addition → Store additions"],"correct":1,"feedback":"A same-action update across multiple stores should use the matching Bulk Update option when available.","tags":["Case category","Bulk update"],"critical":false},{"id":"S04","type":"single","section":"Menu & Photography","stem":"A merchant emails item photos and asks DoorDash to attach them to existing menu items. Which category is best?","options":["Menu → Photos","Photography → Menu Photos","Merchant portal → tools explanation","Feedback → Website/App"],"correct":0,"feedback":"Merchant-provided item photo updates belong under Menu → Photos. Professional photography services are different.","tags":["Case category","Menu photos"],"critical":false},{"id":"S05","type":"single","section":"Menu & Photography","stem":"A merchant asks for a professional photo shoot after the Account Manager verifies eligibility and checks for older photo shoot requests. Which category is most appropriate?","options":["Photography → Menu Photos","Menu → Incorrectly updated","Payment → Reimbursements","Growth → Material Request"],"correct":0,"feedback":"Professional photo service requests belong under Photography → Menu Photos.","tags":["Case category","Photography"],"critical":false},{"id":"S06","type":"single","section":"Merchant Portal Access","stem":"The merchant forgot their Merchant Portal password and needs a reset. Which category is best?","options":["Merchant portal → Password reset","Merchant portal → Login credential request","Account settings → Email update","Bulk Update → Login credential request"],"correct":0,"feedback":"Forgotten password is Password reset. Credentials needed for a different reason may be Login credential request.","tags":["Case category","Merchant Portal"],"critical":false},{"id":"S07","type":"single","section":"Merchant Portal Access","stem":"A new authorized user needs access to exactly one store. Which category is best?","options":["Merchant portal → single store access","Merchant portal → Multi store access request","Bulk Update → Login credential request","Account settings → Email update"],"correct":0,"feedback":"One-store access should use single store access.","tags":["Case category","Merchant Portal"],"critical":false},{"id":"S08","type":"single","section":"Merchant Portal Access","stem":"An authorized business admin needs access across multiple stores. Which category is best?","options":["Merchant portal → single store access","Merchant portal → Multi store access request","Account settings → Store Status","Data Reporting Request → Test order"],"correct":1,"feedback":"Multi-store access belongs under Merchant portal → Multi store access request.","tags":["Case category","Merchant Portal"],"critical":false},{"id":"S09","type":"single","section":"Payment vs Portal","stem":"The merchant can log in, but the bank update tool in the portal is blocked. The requested action is to fix the portal block. Which category is best?","options":["Payment → Bank Information Update","Merchant portal → Can’t update bank info","Payment → Missing deposit","Data Reporting Request → Payment"],"correct":1,"feedback":"Choose based on the support action. If the issue is portal inability to update bank info, use the Merchant portal category.","tags":["Case category","Payment","Merchant Portal"],"critical":false},{"id":"S10","type":"single","section":"Payment","stem":"The merchant reports a payout expected last week never arrived. Which category is best?","options":["Payment → Missing deposit","Payment → Deposit discrepancies","Data Reporting Request → Test order","Feedback → Support"],"correct":0,"feedback":"A missing payout/deposit belongs under Payment → Missing deposit.","tags":["Case category","Payment"],"critical":false},{"id":"S11","type":"single","section":"Payment","stem":"The merchant received a deposit, but the amount does not match expected totals. Which category is best?","options":["Payment → Missing deposit","Payment → Deposit discrepancies","Payment → Bank Information Update","Payment → Marketing Fee"],"correct":1,"feedback":"A mismatch in an existing deposit is a discrepancy, not a missing deposit.","tags":["Case category","Payment"],"critical":false},{"id":"S12","type":"single","section":"Order Protocol","stem":"The merchant wants to switch order receiving from email to tablet. Which category is best?","options":["Order Protocol → Switch/alter Protocol","Tablet / Printer → Tablet request","Merchant portal → tools explanation","Point of sale → Other"],"correct":0,"feedback":"Changing how orders are received belongs under Order Protocol → Switch/alter Protocol.","tags":["Case category","Order Protocol"],"critical":false},{"id":"S13","type":"single","section":"Order Protocol vs Hardware","stem":"Orders are not arriving through the tablet, but the device itself is physically fine. Which category is best?","options":["Tablet / Printer → Software issue","Order Protocol → Tablet issue","Tablet / Printer → Cracked/broken screen","Account settings → Store Status"],"correct":1,"feedback":"Orders not coming through the tablet is an order-receiving issue, so route to Order Protocol → Tablet issue.","tags":["Case category","Order Protocol","Critical routing"],"critical":true},{"id":"S14","type":"single","section":"Hardware","stem":"The tablet screen is cracked and the merchant needs hardware support. Which category is best?","options":["Tablet / Printer → Cracked/broken screen","Order Protocol → Tablet issue","Merchant portal → portal issues","Payment → Tablet fee"],"correct":0,"feedback":"Physical device damage belongs under Tablet / Printer.","tags":["Case category","Hardware"],"critical":false},{"id":"S15","type":"single","section":"point-of-sale","stem":"A merchant asks to integrate their point-of-sale with DoorDash for order management. Which category is best?","options":["Point of sale → Integration Request","Order Protocol → point-of-sale issues","Merchant portal → tools explanation","Growth → Add locations"],"correct":0,"feedback":"A new point-of-sale connection request belongs under Point of sale → Integration Request.","tags":["Case category","point-of-sale"],"critical":false},{"id":"S16","type":"single","section":"point-of-sale","stem":"A point-of-sale-connected menu is not syncing correctly and items differ from the point-of-sale source. Which category is best?","options":["Point of sale → Menu Discrepancies","Menu → Quick change","Menu → Photos","Account settings → Store/business name"],"correct":0,"feedback":"point-of-sale-driven menu mismatches should be routed under Point of sale when the point-of-sale integration/sync is the root support action.","tags":["Case category","point-of-sale","Menu"],"critical":false},{"id":"S17","type":"single","section":"Deactivation & Reactivation","stem":"A merchant permanently closed the business and wants the store removed from DoorDash. Which category is best?","options":["Deactivation → Out of business","Deactivation → Temporary","Account settings → Store Status","Reactivation → Reactivate"],"correct":0,"feedback":"Permanent closure maps to Deactivation → Out of business.","tags":["Case category","Deactivation"],"critical":false},{"id":"S18","type":"single","section":"Deactivation & Reactivation","stem":"A merchant needs the store paused for a short renovation and plans to reopen. Which category is best?","options":["Deactivation → Temporary","Deactivation → Out of business","Account settings → Store/business name","Feedback → Company"],"correct":0,"feedback":"Temporary pause maps to Deactivation → Temporary.","tags":["Case category","Deactivation"],"critical":false},{"id":"S19","type":"single","section":"Renegotiation","stem":"The merchant wants a lower commission rate going forward. Which category is best?","options":["Payment → Commission","Renegotiation → Commission","Growth → Renegotiations","Renegotiation → Promotion"],"correct":1,"feedback":"Future terms changes belong under Renegotiation. Payment → Commission is for current payment/commission disputes.","tags":["Case category","Renegotiation"],"critical":false},{"id":"S20","type":"single","section":"Store Addition","stem":"An active merchant wants to add a new location under their existing relationship. Which category is best?","options":["Growth → Add locations","Store Addition → Store additions","Onboarding issues → Reach Out","New Partnership Inquiry"],"correct":1,"feedback":"Adding/creating a store location uses Store Addition → Store additions.","tags":["Case category","Store addition"],"critical":false},{"id":"S21","type":"multi","section":"Case Readiness","stem":"Before creating a standard support case, what should the Account Manager do? Select all that apply.","options":["Confirm the issue with the merchant or account notes","Check Figment/Salesforce for existing cases using store identification number or business identification number","Select the category based on the support action needed, not just keywords","Gather only critical missing information","Invent a missing order identification number to move faster","Promise a timeline not provided by an approved internal approved service-level expectation"],"correct":[0,1,2,3],"feedback":"Strong case intake verifies the issue, avoids duplicates, routes by action, and does not invent facts or timelines.","tags":["Case process","Documentation","Critical safety"],"critical":true},{"id":"S22","type":"multi","section":"Sensitive Data","stem":"Which details should not be included in a support case unless explicitly required by approved process? Select all that apply.","options":["Full bank account number","social security number or full tax identification number","Passwords or login codes","Unnecessary personal data","store identification number when relevant","Concise issue summary"],"correct":[0,1,2,3],"feedback":"Cases should include relevant operational context, not unnecessary sensitive information.","tags":["Critical safety","Documentation"],"critical":true},{"id":"S23","type":"multi","section":"Follow-up & Closure","stem":"Which actions protect support case accuracy and closure? Select all that apply.","options":["Confirm the issue and gather the store identification number, business identification number, and contact details when available.","Check Figment or Salesforce for duplicate or related cases before submitting a new case.","Choose the exact parent and specific category based on the support action needed.","Write a concise Description of Update with no invented facts.","Confirm the Account Manager receives the support case email after creation.","Document the follow-up owner and date, then monitor toward closure.","Escalate only through the approved path when criteria are met.","Invent missing details to help the case move faster.","Promise a timeline that was not provided by an approved internal source."],"correct":[0,1,2,3,4,5,6],"feedback":"The goal is not only case creation. Strong execution includes accurate intake, duplicate checks, exact routing, confirmation, follow-up, and escalation discipline.","tags":["Case process","Follow-up","Documentation","Critical safety"],"critical":true},{"id":"S24","type":"match","section":"Taxonomy Classification","stem":"Match the scenario to the best parent category.","prompts":[{"left":"Merchant cannot access portal due to permissions","right":"Merchant portal"},{"left":"Order receiving method needs to change","right":"Order Protocol"},{"left":"Deposit or payout issue","right":"Payment"},{"left":"Professional photo service request","right":"Photography"},{"left":"point-of-sale menu sync issue","right":"Point of sale"},{"left":"Temporary or permanent stop operating","right":"Deactivation"}],"choices":["Order Protocol","Deactivation","Merchant portal","Point of sale","Photography","Payment"],"feedback":"Correct parent category selection is the foundation of accurate case routing.","tags":["Case category","Taxonomy"],"critical":false},{"id":"S25","type":"single","section":"Separate Cases","stem":"A merchant needs a bank information update and also wants menu item photos uploaded. What should the Account Manager recommend?","options":["Create one case with both issues to save time.","Create separate cases because the issues are unrelated and route to different categories.","Choose the first issue only and ignore the second.","Use Feedback → Company for both."],"correct":1,"feedback":"Unrelated issues should be separated so each can route to the right team and workflow.","tags":["Case process","Critical routing"],"critical":true},{"id":"S26","type":"single","section":"Missing Info","stem":"A merchant says, “My payment is wrong,” but provides no store identification number, date, order identification number, amount, or deposit details. What is the best response?","options":["Guess the most likely deposit and create a case immediately.","Use the best likely payment category with low confidence and ask up to three critical clarification questions.","Refuse to help until they provide every possible document.","Create a menu case because payment is unclear."],"correct":1,"feedback":"When unclear, choose the best likely path, mark confidence appropriately, and ask only critical questions.","tags":["Missing info","Case process","Payment"],"critical":false},{"id":"S27","type":"single","section":"Feedback","stem":"A merchant wants to submit feedback that Dashers are often rude, but is not asking for an account change. Which category is best?","options":["Feedback → Dashers","Deactivation → Dasher issues","Order Protocol → Dasher issues","Tablet / Printer → Misc troubleshooting"],"correct":0,"feedback":"If the action is feedback only, use Feedback. Do not choose a direct account-change category unless action is needed.","tags":["Case category","Feedback"],"critical":false},{"id":"S28","type":"single","section":"Deactivation & Reactivation","stem":"A previously inactive store is ready to come back online and needs reactivation. Which category is best?","options":["Reactivation → Reactivate","Account settings → Store Status","Deactivation → Chosen","Growth → Increase orders"],"correct":0,"feedback":"Reactivation belongs under Reactivation → Reactivate.","tags":["Case category","Reactivation"],"critical":false},{"id":"S29","type":"single","section":"Fraud & Security","stem":"There is suspected unauthorized Merchant Portal access on an active merchant account. Which category is best from the provided taxonomy?","options":["Merchant portal → Fraud","Payment → Liens and Holds","Feedback → Website/App","Account settings → Email issues"],"correct":0,"feedback":"Suspected portal fraud or unauthorized access should use Merchant portal → Fraud and follow approved escalation guidance.","tags":["Case category","Fraud","Critical safety"],"critical":true},{"id":"S30","type":"single","section":"Description of Update","stem":"Which Description of Update is strongest for a case?","options":["Fix as soon as possible. Merchant is mad. I think it is probably deposit related.","store identification number: 123456; business identification number: Not provided; Merchant: Cedar Grill; Contact Email: owner@example.com; Issue Summary: merchant reports deposit for May 20 has not arrived; Requested Action: review missing deposit; Relevant Details: expected deposit date May 20, amount not provided; Impact/Urgency: merchant cannot reconcile payout; Account Manager Notes: checked Figment, no duplicate case found; Missing info: deposit amount if required.","Merchant says payment issue. Guaranteed to be solved in 24 hours.","store identification number: unknown; business identification number: unknown; please fix all payments forever."],"correct":1,"feedback":"A strong Description of Update is structured, specific, and transparent about missing information without promising unapproved timelines.","tags":["Documentation","Case quality","Critical safety"],"critical":true}],"duration":"30–45 minutes","themeNote":"DoorDash-style red, clean cards, and dark mode.","recipientEmail":"saul.chavez@ext.doordash.com"};
+const STORAGE_KEY = 'dd_am_assessment_' + moduleData.slug + '_v2';
+const recipientEmail = moduleData.recipientEmail;
+const SUBMISSION_ENDPOINT = ''; // Paste the Google Apps Script web address here for direct submission.
+const SUBMISSION_SECRET = ''; // Optional shared secret. Keep blank unless configured in the endpoint.
+let state = {
+  profile:{}, answers:{}, orderConfirmed:{}, submitted:false, submittedAt:null, attemptId:null, finalResult:null, theme:'light'
+};
+
+function load(){
+  try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw) state = {...state, ...JSON.parse(raw)}; }catch(e){ console.warn(e); }
+  if(!state.profile.attemptDate){ state.profile.attemptDate = new Date().toISOString().slice(0,10); }
+}
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1700); }
+function esc(s){ return String(s ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+function normSet(arr){ return [...new Set((arr||[]).map(String))].sort(); }
+function sameArray(a,b){ const aa=normSet(a), bb=normSet(b); return aa.length===bb.length && aa.every((v,i)=>v===bb[i]); }
+function today(){ return new Date().toISOString().slice(0,10); }
+
+function initTheme(){
+  document.documentElement.setAttribute('data-theme', state.theme || 'light');
+  document.getElementById('themeToggle').textContent = (state.theme === 'dark') ? 'Light mode' : 'Dark mode';
+}
+function toggleTheme(){ state.theme = (state.theme === 'dark') ? 'light' : 'dark'; save(); initTheme(); }
+
+function renderProfile(){
+  const ids = ['amName','cohort','trainer','attemptDate'];
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    el.value = state.profile[id] || (id==='attemptDate' ? today() : '');
+    el.addEventListener('input',()=>{ if(state.submitted) return; state.profile[id]=el.value; save(); });
+    el.disabled = !!state.submitted;
+  });
+}
+
+function isAnswered(q){
+  const a=state.answers[q.id];
+  if(q.type==='single') return a !== undefined && a !== null && a !== '';
+  if(q.type==='multi') return Array.isArray(a) && a.length>0;
+  if(q.type==='match') return a && q.prompts.every(p=>a[p.left]);
+  if(q.type==='order') return Array.isArray(a) && a.length===q.correct.length && state.orderConfirmed && state.orderConfirmed[q.id];
+  return false;
+}
+function scoreQuestion(q){
+  const a=state.answers[q.id];
+  if(q.type==='single') return Number(a)===q.correct ? 1 : 0;
+  if(q.type==='multi'){
+    const selected = new Set((a||[]).map(Number));
+    const correct = new Set(q.correct.map(Number));
+    const totalCorrect = correct.size || 1;
+    let truePos=0, falsePos=0;
+    selected.forEach(x=>{ if(correct.has(x)) truePos++; else falsePos++; });
+    return Math.max(0, Math.min(1, (truePos - falsePos) / totalCorrect));
+  }
+  if(q.type==='match'){
+    if(!a) return 0;
+    let ok=0;
+    q.prompts.forEach(p=>{ if(a[p.left] === p.right) ok++; });
+    return ok / q.prompts.length;
+  }
+  if(q.type==='order'){
+    if(!Array.isArray(a)) return 0;
+    let ok=0;
+    q.correct.forEach((item,i)=>{ if(a[i] === item) ok++; });
+    return ok / q.correct.length;
+  }
+  return 0;
+}
+function selectedText(q){
+  const a=state.answers[q.id];
+  if(q.type==='single') return q.options[Number(a)] ?? 'Not answered';
+  if(q.type==='multi') return (a||[]).map(i=>q.options[Number(i)]).join('; ') || 'Not answered';
+  if(q.type==='match') return q.prompts.map(p=>`${p.left} => ${(a&&a[p.left])||'Not answered'}`).join('; ');
+  if(q.type==='order') return (a||[]).map((x,i)=>`${i+1}. ${x}`).join('; ') || 'Not answered';
+  return '';
+}
+function correctText(q){
+  if(q.type==='single') return q.options[q.correct];
+  if(q.type==='multi') return q.correct.map(i=>q.options[i]).join('; ');
+  if(q.type==='match') return q.prompts.map(p=>`${p.left} => ${p.right}`).join('; ');
+  if(q.type==='order') return q.correct.map((x,i)=>`${i+1}. ${x}`).join('; ');
+  return '';
+}
+function answerStatus(q){ const s=scoreQuestion(q); if(s>=.999) return 'Correct'; if(s>0) return 'Partial'; return 'Incorrect'; }
+
+function ensureOrderAnswer(q){
+  if(!Array.isArray(state.answers[q.id]) || state.answers[q.id].length!==q.items.length){ state.answers[q.id]=[...q.items]; save(); }
+}
+
+function renderQuestions(){
+  const wrap=document.getElementById('questionsWrap');
+  const bySection = {};
+  moduleData.questions.forEach((q,i)=>{ if(!bySection[q.section]) bySection[q.section]=[]; bySection[q.section].push([q,i]); });
+  let html='';
+  Object.entries(bySection).forEach(([section, list])=>{
+    html += `<div class="chip red" style="margin-top:18px">${esc(section)}</div>`;
+    list.forEach(([q,i])=>{ html += renderQuestion(q,i); });
+  });
+  wrap.innerHTML=html;
+  bindQuestionEvents();
+  updateProgress();
+  if(state.submitted){ lockAssessment(); showResults(false); }
+}
+function renderQuestion(q,i){
+  const qnum = i+1;
+  const answered = isAnswered(q);
+  const crit = q.critical ? '<span class="chip danger">Critical flag if missed</span>' : '';
+  let body='';
+  if(q.type==='single'){
+    body = `<div class="options">${q.options.map((o,idx)=>{
+      const sel = Number(state.answers[q.id])===idx;
+      return `<label class="option ${sel?'selected':''}" data-qid="${q.id}" data-type="single" data-value="${idx}"><input type="radio" name="${q.id}" ${sel?'checked':''} ${state.submitted?'disabled':''}> <span>${esc(o)}</span></label>`;
+    }).join('')}</div>`;
+  } else if(q.type==='multi'){
+    const ans = new Set((state.answers[q.id]||[]).map(Number));
+    body = `<div class="options">${q.options.map((o,idx)=>{
+      const sel = ans.has(idx);
+      return `<label class="option ${sel?'selected':''}" data-qid="${q.id}" data-type="multi" data-value="${idx}"><input type="checkbox" ${sel?'checked':''} ${state.submitted?'disabled':''}> <span>${esc(o)}</span></label>`;
+    }).join('')}</div>`;
+  } else if(q.type==='match'){
+    const ans = state.answers[q.id]||{};
+    body = `<div class="match-table">${q.prompts.map((p,idx)=>`
+      <div class="match-row"><div class="prompt">${esc(p.left)}</div><select data-match-q="${q.id}" data-left="${esc(p.left)}" ${state.submitted?'disabled':''}><option value="">Choose best match</option>${q.choices.map(c=>`<option ${ans[p.left]===c?'selected':''}>${esc(c)}</option>`).join('')}</select></div>`).join('')}</div>`;
+  } else if(q.type==='order'){
+    ensureOrderAnswer(q);
+    const arr = state.answers[q.id];
+    body = `<div class="order-list" data-order-q="${q.id}">${arr.map((item,idx)=>`
+      <div class="order-item"><span class="num">${idx+1}</span><strong>${esc(item)}</strong><span class="move"><button class="iconbtn" data-move="up" data-q="${q.id}" data-index="${idx}" ${idx===0||state.submitted?'disabled':''}>↑</button><button class="iconbtn" data-move="down" data-q="${q.id}" data-index="${idx}" ${idx===arr.length-1||state.submitted?'disabled':''}>↓</button></span></div>`).join('')}<button class="btn secondary" style="justify-self:start;margin-top:8px" data-confirm-order="${q.id}" ${state.submitted?'disabled':''}>Confirm this order</button></div>`;
+  }
+  return `<article class="question" id="q${qnum}" data-qid="${q.id}">
+    <div class="qhead"><div class="qmeta"><span class="chip red">Q${qnum}</span><span class="chip">${esc(q.type)}</span>${crit}</div><span class="chip ${answered?'red':''}" id="status-${q.id}">${answered?'Answered':'Open'}</span></div>
+    <p class="qtitle">${esc(q.stem)}</p>
+    ${body}
+    <div class="feedback" id="fb-${q.id}"></div>
+  </article>`;
+}
+function bindQuestionEvents(){
+  document.querySelectorAll('.option').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      if(state.submitted) return;
+      const qid=el.dataset.qid;
+      const q=moduleData.questions.find(x=>x.id===qid);
+      const val=Number(el.dataset.value);
+      if(q.type==='single') state.answers[qid]=val;
+      else {
+        const set=new Set((state.answers[qid]||[]).map(Number));
+        if(set.has(val)) set.delete(val); else set.add(val);
+        state.answers[qid]=[...set].sort((a,b)=>a-b);
+      }
+      save(); renderQuestions();
+    });
+  });
+  document.querySelectorAll('[data-match-q]').forEach(sel=>{
+    sel.addEventListener('change',()=>{
+      if(state.submitted) return;
+      const qid=sel.dataset.matchQ; const left=sel.dataset.left;
+      state.answers[qid]=state.answers[qid]||{};
+      state.answers[qid][left]=sel.value;
+      save(); updateProgress();
+    });
+  });
+  document.querySelectorAll('[data-move]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(state.submitted) return;
+      const qid=btn.dataset.q; const idx=Number(btn.dataset.index); const dir=btn.dataset.move;
+      const arr=[...state.answers[qid]];
+      const swap = dir==='up' ? idx-1 : idx+1;
+      if(swap<0 || swap>=arr.length) return;
+      [arr[idx],arr[swap]]=[arr[swap],arr[idx]];
+      state.answers[qid]=arr; state.orderConfirmed=state.orderConfirmed||{}; state.orderConfirmed[qid]=true; save(); renderQuestions();
+    });
+  });
+  document.querySelectorAll('[data-confirm-order]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(state.submitted) return;
+      state.orderConfirmed=state.orderConfirmed||{}; state.orderConfirmed[btn.dataset.confirmOrder]=true; save(); renderQuestions();
+    });
+  });
+}
+function updateProgress(){
+  const answered=moduleData.questions.filter(isAnswered).length;
+  const pct=Math.round(answered/moduleData.questions.length*100);
+  document.getElementById('answeredCount').textContent=`${answered}/${moduleData.questions.length}`;
+  document.getElementById('progressText').textContent=pct+'%';
+  document.getElementById('progressBar').style.width=pct+'%';
+  renderQnav();
+}
+function renderQnav(){
+  const nav=document.getElementById('qnav');
+  nav.innerHTML = moduleData.questions.map((q,i)=>`<a href="#q${i+1}" class="${isAnswered(q)?'answered':''} ${q.critical?'flag':''}" title="Question ${i+1}">${i+1}</a>`).join('');
+}
+function lockAssessment(){
+  document.querySelectorAll('input,select,textarea').forEach(el=>{ if(el.id!=='reportBox') el.disabled=true; });
+  document.getElementById('finalizeBtn').disabled=true;
+  document.getElementById('saveBtn').disabled=true;
+  document.getElementById('clearBtn').disabled=true;
+  document.querySelectorAll('.question').forEach(q=>q.classList.add('locked'));
+}
+function calculate(){
+  const rows = moduleData.questions.map((q,i)=>({q,index:i,score:scoreQuestion(q),status:answerStatus(q)}));
+  const raw = rows.reduce((a,r)=>a+r.score,0);
+  const score = Math.round(raw / moduleData.questions.length * 100);
+  const breakdown={};
+  rows.forEach(r=>{
+    r.q.tags.forEach(tag=>{ if(!breakdown[tag]) breakdown[tag]={score:0,max:0}; breakdown[tag].score += r.score; breakdown[tag].max += 1; });
+  });
+  const criticalFlags=rows.filter(r=>r.q.critical && r.score<1).map(r=>({id:r.q.id, number:r.index+1, stem:r.q.stem, feedback:r.q.feedback, status:r.status}));
+  const sortedTags = Object.entries(breakdown).map(([tag,v])=>({tag, pct:Math.round(v.score/v.max*100), score:v.score, max:v.max})).sort((a,b)=>a.pct-b.pct);
+  return {score, raw, rows, breakdown:sortedTags, criticalFlags, submittedAt: state.submittedAt || new Date().toISOString()};
+}
+function band(score){
+  if(score<=30) return {title:'0–30 · Extensive review required', text:'Do not continue to live execution without structured review of the full module.'};
+  if(score<=59) return {title:'31–59 · Topic-by-topic calibration needed', text:'The Account Manager has foundations but needs calibration by topic before readiness sign-off.'};
+  if(score<=80) return {title:'60–80 · Focus on specific improvement areas', text: score>=80 ? 'Passing threshold reached at 80, but review the weakest categories and any critical flags before expanding scope.' : 'The Account Manager is close but should focus on targeted gaps and repeat scenario practice.'};
+  return {title:'81–100 · Strengths identified', text:'Use the result to identify strong areas and prepare for next-level execution, consistency, and peer support.'};
+}
+function finalize(){
+  if(state.submitted){ showResults(true); return; }
+  const missing = moduleData.questions.filter(q=>!isAnswered(q));
+  const requiredProfile=['amName','cohort','trainer','attemptDate'];
+  const missingProfile=requiredProfile.filter(id=>!(document.getElementById(id).value||'').trim());
+  if(missingProfile.length){ toast('Complete profile fields first.'); document.getElementById('profile').scrollIntoView({behavior:'smooth'}); return; }
+  if(missing.length){ toast(`Answer all questions first. Missing: ${missing.length}`); const idx=moduleData.questions.findIndex(q=>q.id===missing[0].id)+1; location.hash='q'+idx; return; }
+  ['amName','cohort','trainer','attemptDate'].forEach(id=>state.profile[id]=document.getElementById(id).value);
+  state.submitted=true;
+  state.submittedAt=new Date().toISOString();
+  state.attemptId = state.attemptId || `${moduleData.slug}-${state.submittedAt.replace(/[-:.TZ]/g,'').slice(0,14)}`;
+  state.finalResult=calculate();
+  save();
+  lockAssessment();
+  showResults(true);
+  toast('Assessment finalized.');
+}
+function showResults(scroll){
+  const result=calculate();
+  state.finalResult=result; save();
+  document.getElementById('results').classList.add('show');
+  document.getElementById('scorePill').textContent=result.score+'%';
+  const b=band(result.score);
+  const pass = result.score>=80 && result.criticalFlags.length===0;
+  const critText = result.criticalFlags.length ? `${result.criticalFlags.length} critical flag(s) require Team Lead calibration.` : 'No critical flags triggered.';
+  document.getElementById('resultSummary').innerHTML = `<div class="score-hero"><div class="score-circle">${result.score}<small>%</small></div><div><p class="band">${esc(b.title)}</p><p class="lede">${esc(b.text)}</p><div style="margin-top:12px"><span class="chip ${pass?'red':'warn'}">${pass?'Pass-ready':'Calibration needed'}</span><span class="chip ${result.criticalFlags.length?'danger':'red'}">${esc(critText)}</span></div></div></div>`;
+  renderBreakdown(result);
+  renderReview(result);
+  const report=buildReport(result);
+  document.getElementById('reportBox').value=report;
+  if(scroll) document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+function renderBreakdown(result){
+  const box=document.getElementById('breakdown');
+  const lows=result.breakdown.slice(0,6);
+  const highs=[...result.breakdown].sort((a,b)=>b.pct-a.pct).slice(0,6);
+  box.innerHTML = `<div class="grid two"><div><h3>Focus areas</h3>${lows.map(r=>barRow(r)).join('')}</div><div><h3>Strong areas</h3>${highs.map(r=>barRow(r)).join('')}</div></div>`;
+}
+function barRow(r){ return `<div class="brow"><strong>${esc(r.tag)}</strong><div class="bbar"><span style="width:${r.pct}%"></span></div><b>${r.pct}%</b></div>`; }
+function renderReview(result){
+  const review=document.getElementById('review');
+  review.innerHTML = '<h3>Question review</h3>' + result.rows.map(r=>{
+    const good=r.score>=.999;
+    const partial=r.score>0 && r.score<.999;
+    return `<div class="review-item ${good?'good':'bad'}"><div class="qmeta"><span class="chip red">Q${r.index+1}</span><span class="chip ${good?'red': partial?'warn':'danger'}">${r.status} · ${Math.round(r.score*100)}%</span>${r.q.critical?'<span class="chip danger">Critical</span>':''}</div><p><b>${esc(r.q.stem)}</b></p><p><b>Your answer:</b> ${esc(selectedText(r.q))}</p><p><b>Correct / expected:</b> ${esc(correctText(r.q))}</p><p style="color:var(--muted)"><b>Feedback:</b> ${esc(r.q.feedback)}</p></div>`;
+  }).join('');
+}
+function buildReport(result){
+  result = result || calculate();
+  const p=state.profile;
+  const b=band(result.score);
+  const lows=result.breakdown.slice(0,5).map(x=>`${x.tag} ${x.pct}%`).join(', ') || 'None';
+  const highs=[...result.breakdown].sort((a,b)=>b.pct-a.pct).slice(0,5).map(x=>`${x.tag} ${x.pct}%`).join(', ') || 'None';
+  const crit=result.criticalFlags.length ? result.criticalFlags.map(f=>`Q${f.number}: ${f.stem}`).join('\n') : 'None';
+  const lines=[];
+  lines.push(`${moduleData.title} - Final Report`);
+  lines.push(`Attempt ID: ${state.attemptId || 'DRAFT-' + moduleData.slug}`);
+  lines.push(`Account Manager Name: ${p.amName || ''}`);
+  lines.push(`Cohort: ${p.cohort || ''}`);
+  lines.push(`Trainer: ${p.trainer || ''}`);
+  lines.push(`Date: ${p.attemptDate || ''}`);
+  lines.push(`Module: ${moduleData.moduleShort}`);
+  lines.push(`Submitted At: ${state.submittedAt || new Date().toISOString()}`);
+  lines.push('');
+  lines.push(`Score: ${result.score}/100`);
+  lines.push(`Band: ${b.title}`);
+  lines.push(`Interpretation: ${b.text}`);
+  lines.push(`Passing Threshold: 80+`);
+  lines.push(`Critical Flags: ${result.criticalFlags.length}`);
+  lines.push('');
+  lines.push(`Strong Areas: ${highs}`);
+  lines.push(`Focus Areas: ${lows}`);
+  lines.push('');
+  lines.push('Critical Flag Details:');
+  lines.push(crit);
+  lines.push('');
+  lines.push('Category Breakdown:');
+  result.breakdown.forEach(x=>lines.push(`- ${x.tag}: ${x.pct}%`));
+  lines.push('');
+  lines.push('Full Answer Review:');
+  result.rows.forEach(r=>{
+    lines.push(`\nQ${r.index+1}. ${r.q.stem}`);
+    lines.push(`Question format: ${r.q.type} | Tags: ${r.q.tags.join(', ')}${r.q.critical?' | CRITICAL':''}`);
+    lines.push(`Status: ${r.status} | Credit: ${Math.round(r.score*100)}%`);
+    lines.push(`Your answer: ${selectedText(r.q)}`);
+    lines.push(`Expected: ${correctText(r.q)}`);
+    lines.push(`Feedback: ${r.q.feedback}`);
+  });
+  lines.push('');
+  lines.push('Coaching note: Use this report with quality assurance, shadowing, and Team Lead calibration. The result is diagnostic and should support targeted coaching.');
+  return lines.join('\n');
+}
+async function copyReport(){
+  const report=document.getElementById('reportBox').value || buildReport();
+  try{ await navigator.clipboard.writeText(report); toast('Full report copied.'); }
+  catch(e){ const box=document.getElementById('reportBox'); box.focus(); box.select(); document.execCommand('copy'); toast('Report selected/copied.'); }
+}
+function downloadText(filename, text, type='text/plain'){
+  const blob=new Blob([text],{type}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+function buildSubmissionPayload(result){
+  result = result || calculate();
+  const report = document.getElementById('reportBox').value || buildReport(result);
+  return {
+    source: 'local-html-assessment-v2',
+    moduleSlug: moduleData.slug,
+    module: moduleData.moduleShort,
+    attemptId: state.attemptId || ('DRAFT-' + moduleData.slug),
+    submittedAt: state.submittedAt || new Date().toISOString(),
+    profile: state.profile,
+    score: result.score,
+    passingThreshold: 80,
+    passed: result.score >= 80 && result.criticalFlags.length === 0,
+    criticalFlags: result.criticalFlags,
+    breakdown: result.breakdown,
+    answers: result.rows.map(r => ({
+      questionNumber: r.index + 1,
+      questionId: r.q.id,
+      section: r.q.section,
+      question: r.q.stem,
+      selectedAnswer: selectedText(r.q),
+      expectedAnswer: correctText(r.q),
+      status: r.status,
+      creditPercent: Math.round(r.score * 100),
+      feedback: r.q.feedback,
+      tags: r.q.tags,
+      critical: !!r.q.critical
+    })),
+    report: report,
+    secret: SUBMISSION_SECRET || ''
+  };
+}
+function openMailDraft(report, result){
+  const p=state.profile;
+  const subject=encodeURIComponent(`${moduleData.moduleShort} Assessment Results - ${p.amName || 'Account Manager'} - ${result.score}%`);
+  let body=report;
+  if(body.length>7000){
+    body = `Full report copied to clipboard. Please paste it into this email before sending.
+
+Summary:
+Account Manager: ${p.amName || ''}
+Cohort: ${p.cohort || ''}
+Trainer: ${p.trainer || ''}
+Date: ${p.attemptDate || ''}
+Module: ${moduleData.moduleShort}
+Score: ${result.score}/100
+Critical Flags: ${result.criticalFlags.length}
+Focus Areas: ${result.breakdown.slice(0,5).map(x=>x.tag+' '+x.pct+'%').join(', ')}
+`;
+  }
+  window.location.href=`mailto:${recipientEmail}?subject=${subject}&body=${encodeURIComponent(body)}`;
+}
+async function emailResults(){
+  if(!state.submitted){ toast('Finalize the assessment before submitting results.'); return; }
+  const result=calculate();
+  const report=document.getElementById('reportBox').value || buildReport(result);
+  const payload=buildSubmissionPayload(result);
+  await copyReport();
+  const endpoint=(SUBMISSION_ENDPOINT || '').trim();
+  if(endpoint){
+    try{
+      await fetch(endpoint, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload)});
+      state.resultsSubmittedAt = new Date().toISOString();
+      save();
+      toast('Results submitted. Backup report copied.');
+      alert('Results submitted through the configured endpoint. A backup copy was also copied to the clipboard.');
+      return;
+    }catch(err){
+      console.warn('Endpoint submission failed, falling back to email draft.', err);
+      toast('Endpoint unavailable. Opening email draft.');
+    }
+  }
+  openMailDraft(report, result);
+}
+
+function clearProgress(){
+  if(state.submitted){ toast('Submitted attempt is locked locally.'); return; }
+  if(confirm('Clear local progress for this assessment?')){ localStorage.removeItem(STORAGE_KEY); location.reload(); }
+}
+function bind(){
+  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+  document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+  document.getElementById('saveBtn').addEventListener('click', ()=>{save(); toast('Progress saved.');});
+  document.getElementById('clearBtn').addEventListener('click', clearProgress);
+  document.getElementById('finalizeBtn').addEventListener('click', finalize);
+  document.getElementById('copyBtn').addEventListener('click', copyReport);
+  document.getElementById('emailBtn').addEventListener('click', emailResults);
+  document.getElementById('downloadBtn').addEventListener('click', ()=>downloadText(`${moduleData.slug}_assessment_report.txt`, document.getElementById('reportBox').value || buildReport()));
+  document.getElementById('jsonBtn').addEventListener('click', ()=>downloadText(`${moduleData.slug}_assessment_result.json`, JSON.stringify({profile:state.profile,module:moduleData.moduleShort,result:calculate(),answers:state.answers},null,2), 'application/json'));
+}
+function init(){
+  load(); initTheme(); renderProfile(); renderQuestions(); bind(); updateProgress(); if(state.submitted) showResults(false);
+}
+init();
+</script>
+</body>
+</html>
