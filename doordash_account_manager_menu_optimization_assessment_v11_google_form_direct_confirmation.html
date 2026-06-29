@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DoorDash Account Manager Menu Optimization Assessment</title>
+  <style>
+    :root{
+      --dd-red:#eb1700;
+      --dd-red-dark:#b91400;
+      --dd-red-soft:#fff1ef;
+      --bg:#f7f7f8;
+      --bg2:#ffffff;
+      --card:#ffffff;
+      --ink:#191919;
+      --muted:#62666d;
+      --line:#e6e7ea;
+      --soft:#f1f2f4;
+      --success:#0b7a42;
+      --success-soft:#eaf7f0;
+      --warning:#9a6500;
+      --warning-soft:#fff6df;
+      --danger:#b42318;
+      --danger-soft:#fff0ef;
+      --shadow:0 18px 50px rgba(25,25,25,.08);
+      --shadow2:0 8px 22px rgba(25,25,25,.08);
+      --radius:24px;
+      --radius-sm:16px;
+      --font:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      --mono:"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    [data-theme="dark"]{
+      --bg:#0f1115;
+      --bg2:#13161d;
+      --card:#191d25;
+      --ink:#f5f5f6;
+      --muted:#b5bac3;
+      --line:#303542;
+      --soft:#222733;
+      --dd-red-soft:#331412;
+      --success-soft:#0d2d20;
+      --warning-soft:#312613;
+      --danger-soft:#351413;
+      --shadow:0 18px 55px rgba(0,0,0,.34);
+      --shadow2:0 10px 25px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:
+        radial-gradient(circle at 10% -10%, rgba(235,23,0,.16), transparent 24rem),
+        radial-gradient(circle at 90% 0%, rgba(235,23,0,.08), transparent 22rem),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+      color:var(--ink);
+      line-height:1.5;
+      min-height:100vh;
+    }
+    a{color:var(--dd-red)}
+    button,input,select,textarea{font:inherit}
+    .page{width:min(1180px, calc(100% - 32px));margin:0 auto;padding:28px 0 72px}
+    .hero{
+      border:1px solid var(--line);
+      border-radius:32px;
+      background:linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,241,239,.82));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+      padding:clamp(28px,5vw,58px);
+    }
+    [data-theme="dark"] .hero{background:linear-gradient(135deg, rgba(25,29,37,.94), rgba(51,20,18,.7));}
+    .hero:after{
+      content:"";
+      position:absolute;
+      right:-120px;top:-120px;
+      width:320px;height:320px;border-radius:50%;
+      background:rgba(235,23,0,.12);
+      border:1px solid rgba(235,23,0,.22);
+      pointer-events:none;
+    }
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:18px;position:relative;z-index:1}
+    .dashmark{width:38px;height:22px;border-radius:16px;background:var(--dd-red);position:relative;box-shadow:0 8px 20px rgba(235,23,0,.24)}
+    .dashmark:after{content:"";position:absolute;right:5px;top:6px;width:18px;height:10px;border-radius:999px;background:var(--bg2)}
+    .eyebrow{font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:var(--dd-red)}
+    h1{font-size:clamp(2.3rem,6vw,5.2rem);line-height:.95;letter-spacing:-.06em;margin:0 0 14px;position:relative;z-index:1;max-width:930px}
+    .subtitle{font-size:clamp(1rem,1.9vw,1.22rem);color:var(--muted);max-width:900px;margin:0;position:relative;z-index:1}
+    .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;position:relative;z-index:1}
+    .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.7);border-radius:999px;padding:.62rem .82rem;font-weight:800;font-size:.86rem;color:var(--ink)}
+    [data-theme="dark"] .pill{background:rgba(255,255,255,.05)}
+    .pill.red{background:var(--dd-red-soft);border-color:rgba(235,23,0,.24);color:var(--dd-red)}
+    .topbar{position:sticky;top:0;z-index:30;margin:18px 0 22px;padding:10px;border:1px solid var(--line);border-radius:0 0 22px 22px;background:rgba(247,247,248,.86);backdrop-filter:blur(14px);box-shadow:0 12px 26px rgba(25,25,25,.06);display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+    [data-theme="dark"] .topbar{background:rgba(15,17,21,.86)}
+    .nav{display:flex;gap:8px;overflow:auto;scrollbar-width:thin}
+    .nav a,.nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;border-radius:999px;padding:.56rem .72rem;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;cursor:pointer}
+    .nav a:hover,.nav button:hover{border-color:rgba(235,23,0,.55);color:var(--dd-red)}
+    .btn{border:0;border-radius:999px;background:var(--ink);color:var(--bg2);padding:.82rem 1.05rem;font-weight:900;cursor:pointer;box-shadow:var(--shadow2);transition:.16s ease;white-space:nowrap}
+    [data-theme="dark"] .btn{background:#f5f5f6;color:#121212}
+    .btn:hover{transform:translateY(-1px)}
+    .btn.red{background:var(--dd-red);color:white}
+    .btn.secondary{background:var(--card);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+    .btn.danger{background:var(--danger);color:white}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .grid{display:grid;gap:18px}
+    .grid.two{grid-template-columns:1fr 1fr}
+    .grid.three{grid-template-columns:repeat(3,1fr)}
+    .section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(20px,3.5vw,34px);box-shadow:var(--shadow2);margin:20px 0}
+    .section h2{font-size:clamp(1.5rem,3vw,2.3rem);line-height:1.05;letter-spacing:-.04em;margin:0 0 10px}
+    .section p.lede{color:var(--muted);margin:0;max-width:850px}
+    .field{display:grid;gap:7px;font-size:.78rem;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    input,select,textarea{border:1px solid var(--line);border-radius:14px;background:var(--bg2);color:var(--ink);padding:.82rem .9rem;outline:none;width:100%}
+    [data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#11141a}
+    textarea{min-height:110px;resize:vertical;text-transform:none;letter-spacing:0;font-weight:500}
+    .notice{border:1px dashed rgba(235,23,0,.32);background:var(--dd-red-soft);border-radius:18px;padding:15px 16px;color:var(--muted)}
+    .notice b{color:var(--ink)}
+    .submit-reminder{margin:16px 0 4px;border:2px solid var(--dd-red);background:var(--dd-red-soft);border-radius:18px;padding:16px 18px;color:var(--ink);font-weight:900;box-shadow:var(--shadow)}
+    .submit-reminder small{display:block;color:var(--muted);font-weight:700;margin-top:4px}
+    .progress-wrap{display:grid;gap:8px;margin-top:18px}
+    .progress-label{display:flex;justify-content:space-between;color:var(--muted);font-weight:900;font-size:.85rem}
+    .bar{height:12px;background:var(--soft);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+    .bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--dd-red),#ff6a55);border-radius:999px;transition:width .25s ease}
+    .qnav{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+    .qnav a{width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:50%;display:grid;place-items:center;text-decoration:none;color:var(--muted);font-weight:900;font-size:.78rem}
+    .qnav a.answered{background:var(--dd-red-soft);border-color:rgba(235,23,0,.28);color:var(--dd-red)}
+    .qnav a.flag{box-shadow:0 0 0 2px var(--danger-soft) inset;border-color:rgba(180,35,24,.4)}
+    .question{border:1px solid var(--line);border-radius:22px;background:var(--bg2);padding:22px;margin:18px 0;box-shadow:0 4px 16px rgba(25,25,25,.04);position:relative;scroll-margin-top:92px}
+    [data-theme="dark"] .question{background:#151922}
+    .qhead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}
+    .qmeta{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+    .chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--soft);color:var(--muted);border-radius:999px;padding:.28rem .52rem;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+    .chip.red{background:var(--dd-red-soft);color:var(--dd-red);border-color:rgba(235,23,0,.24)}
+    .chip.warn{background:var(--warning-soft);color:var(--warning);border-color:rgba(154,101,0,.24)}
+    .chip.danger{background:var(--danger-soft);color:var(--danger);border-color:rgba(180,35,24,.24)}
+    .qtitle{font-size:1.13rem;font-weight:850;letter-spacing:-.015em;margin:0 0 16px}
+    .options{display:grid;gap:10px}
+    .option{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:14px 15px;cursor:pointer;display:flex;gap:10px;align-items:flex-start;transition:.15s ease;color:var(--ink)}
+    .option:hover{border-color:rgba(235,23,0,.45);transform:translateY(-1px)}
+    .option input{width:18px;min-width:18px;margin-top:3px;accent-color:var(--dd-red)}
+    .option.selected{border-color:rgba(235,23,0,.55);background:var(--dd-red-soft)}
+    .option.correct{border-color:rgba(11,122,66,.45);background:var(--success-soft)}
+    .option.wrong{border-color:rgba(180,35,24,.45);background:var(--danger-soft)}
+    .match-table{display:grid;gap:10px}
+    .match-row{display:grid;grid-template-columns:1fr 1.25fr;gap:10px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--card)}
+    .prompt{font-weight:850}
+    .order-list{display:grid;gap:10px}
+    .order-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--card)}
+    .num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--dd-red-soft);color:var(--dd-red);font-weight:900}
+    .move{display:flex;gap:5px}
+    .iconbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg2);color:var(--ink);cursor:pointer;font-weight:900}
+    .locked{opacity:.95}
+    .feedback{display:none;margin-top:14px;border-radius:16px;padding:13px 14px;border:1px dashed var(--line);background:var(--soft);color:var(--muted)}
+    .feedback.show{display:block}
+    .results{display:none}
+    .results.show{display:block}
+    .score-hero{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center}
+    .score-circle{width:148px;height:148px;border-radius:50%;display:grid;place-items:center;background:var(--dd-red);color:white;box-shadow:0 18px 45px rgba(235,23,0,.22);font-size:2.45rem;font-weight:950;letter-spacing:-.07em}
+    .score-circle small{font-size:1rem;letter-spacing:0}
+    .band{font-size:1.35rem;font-weight:950;letter-spacing:-.03em;margin:0 0 6px}
+    .breakdown{display:grid;gap:10px;margin-top:18px}
+    .brow{display:grid;grid-template-columns:180px 1fr auto;gap:10px;align-items:center}
+    .bbar{height:10px;background:var(--soft);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+    .bbar span{display:block;height:100%;background:var(--dd-red);width:0}
+    .review{display:grid;gap:10px;margin-top:16px}
+    .review-item{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--bg2)}
+    [data-theme="dark"] .review-item{background:#151922}
+    .review-item.good{border-color:rgba(11,122,66,.35)}
+    .review-item.bad{border-color:rgba(180,35,24,.35)}
+    .reportbox{font-family:var(--mono);font-size:.82rem;white-space:pre-wrap}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(15px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg2);border-radius:999px;padding:.75rem 1rem;font-weight:900;box-shadow:var(--shadow);z-index:60;transition:.22s ease}
+    [data-theme="dark"] .toast{background:#f5f5f6;color:#111}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .foot{color:var(--muted);font-size:.9rem;text-align:center;margin-top:22px}
+    @media (max-width: 860px){.topbar{grid-template-columns:1fr}.grid.two,.grid.three{grid-template-columns:1fr}.score-hero{grid-template-columns:1fr}.match-row{grid-template-columns:1fr}.brow{grid-template-columns:1fr}.page{width:min(100% - 20px,1180px)}}
+    @media print{.topbar,.btn,.qnav,.toast{display:none!important}body{background:white}.section,.hero,.question{box-shadow:none;break-inside:avoid}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero" id="top">
+      <div class="brand"><span class="dashmark" aria-hidden="true"></span><span><span class="eyebrow">Movate Costa Rica · DoorDash Account Management</span></span></div>
+      <h1>DoorDash Account Manager Menu Optimization Assessment</h1>
+      <p class="subtitle">Scenario-based readiness exam for why menu optimization matters, menu health, visual quality, video basics, Merchant Portal navigation, and prioritization before paid growth.</p>
+      <div class="hero-meta">
+        <span class="pill red">Module 1 · Menu Optimization</span>
+        <span class="pill">30–45 minutes</span>
+        <span class="pill">Passing threshold: 80+</span>
+        <span class="pill">Fictional merchants only</span>
+      </div>
+    </header>
+
+    <div class="topbar">
+      <nav class="nav" aria-label="Page navigation">
+        <a href="#profile">Start details</a>
+        <a href="#questions">Questions</a>
+        <a href="#results">Results</a>
+        <button type="button" id="themeToggle">Dark mode</button>
+      </nav>
+      <div style="display:flex;gap:8px;align-items:center;overflow:auto">
+        <span class="pill">Score <b id="scorePill">—</b></span>
+        <button class="btn secondary" id="printBtn" type="button">Print / PDF</button>
+      </div>
+    </div>
+
+    <main>
+      <section class="section" id="profile">
+        <h2>Start details</h2>
+        <p class="lede">Enter the required details before starting. Once finalized, the local attempt locks and a coaching report is generated for submission.</p>
+        <div class="grid three" style="margin-top:18px">
+          <label class="field">Account Manager name<input id="amName" placeholder="Full name" autocomplete="name"></label>
+          <label class="field">Cohort<input id="cohort" placeholder="Training cohort / wave"></label>
+          <label class="field">Trainer<input id="trainer" placeholder="Trainer or Team Lead"></label>
+          <label class="field">Date<input id="attemptDate" type="date"></label>
+          <label class="field">Module<input value="Menu Optimization" disabled></label>
+        </div>
+      </section>
+
+      <section class="section" id="questions">
+        <h2>Assessment questions</h2>
+        <p class="lede">Answer all questions. Some questions use matching and scenario decisions instead of only standard multiple choice to measure job judgment, not memorization.</p>
+        <div id="questionsWrap"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+          <button class="btn red" id="finalizeBtn" type="button">Finalize assessment</button>
+          <button class="btn secondary" id="saveBtn" type="button">Save progress</button>
+          <button class="btn secondary" id="clearBtn" type="button">Clear local progress</button>
+        </div>
+      </section>
+
+      <section class="section results" id="results">
+        <h2>Final result and coaching report</h2>
+        <div id="resultSummary"></div>
+        <div id="breakdown" class="breakdown"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:20px 0">
+          <button class="btn red" id="emailBtn" type="button">Submit results</button>
+          <button class="btn secondary" id="copyBtn" type="button">Copy full report</button>
+          <button class="btn secondary" id="downloadBtn" type="button">Download .txt report</button>
+          <button class="btn secondary" id="jsonBtn" type="button">Download data file</button>
+        </div>
+        <div class="notice" style="margin-bottom:14px">After finalizing, the score is not recorded until Submit results is clicked. Submit results will open an official Google Forms confirmation page. Your result is registered only when that page says: Your response has been recorded. Copy and download are backup tools for troubleshooting only.</div>
+        <label class="field">Backup full report<textarea id="reportBox" class="reportbox" readonly></textarea></label>
+        <div id="review" class="review"></div>
+      </section>
+    </main>
+    <footer class="foot">Internal training assessment for active merchant account management. Validate process updates with official resources before using results for coaching decisions.</footer>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<script>
+window.DD_ASSESSMENT_GOOGLE_FORM_CONFIG = {
+  enabled: true,
+  backend: 'google-form',
+  version: 'v11-google-form-direct-visible-confirmation',
+  actionUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSdS-hfITYEsiq96LNjHhpDFOT7GaMCUsrt6anSdXL998mZVIA/formResponse',
+  securityToken: 'DD-AM-TRAINING-V9',
+  entries: {
+    backendVersion: 'entry.944347711',
+    securityToken: 'entry.2043209587',
+    attemptId: 'entry.1826776542',
+    source: 'entry.1792796140',
+    moduleSlug: 'entry.1820527432',
+    module: 'entry.683106474',
+    amName: 'entry.2039635815',
+    cohort: 'entry.477605573',
+    trainer: 'entry.1645887859',
+    assessmentDate: 'entry.2083282923',
+    submittedAt: 'entry.2140637666',
+    score: 'entry.1709185299',
+    passingThreshold: 'entry.1442687625',
+    passed: 'entry.944274808',
+    criticalFlagsCount: 'entry.1208454027',
+    scoreBand: 'entry.97639594',
+    strongAreas: 'entry.130970967',
+    focusAreas: 'entry.1489959066',
+    payloadChunk01: 'entry.804381449',
+    payloadChunk02: 'entry.750243362',
+    payloadChunk03: 'entry.1436720290',
+    payloadChunk04: 'entry.558210288',
+    payloadChunk05: 'entry.2021021047',
+    payloadChunk06: 'entry.1459123753',
+    payloadChunk07: 'entry.492585984',
+    payloadChunk08: 'entry.1033992862',
+    payloadChunk09: 'entry.36563253',
+    payloadChunk10: 'entry.592336073',
+    payloadChunk11: 'entry.1658021750',
+    payloadChunk12: 'entry.1341339611'
+  }
+};
+</script>
+<script>
+const moduleData = {"slug":"menu_optimization","module":"Module 1 · Menu Optimization","moduleShort":"Menu Optimization","title":"DoorDash Account Manager Menu Optimization Assessment","subtitle":"Scenario-based readiness exam for why menu optimization matters, menu health, visual quality, video basics, Merchant Portal navigation, and prioritization before paid growth.","questions":[{"id":"TAV","type":"single","section":"Why Menu Optimization Matters","stem":"A merchant asks why menu optimization should happen before paid growth. Which explanation is most relevant?","options":["It is only a cosmetic task and does not affect business results.","It helps customers understand what they are buying, improves confidence before checkout, and makes future traffic from marketing more likely to convert.","It replaces the need for any sales conversation.","It is mainly useful because it creates more work for the merchant."],"correct":1,"feedback":"Menu optimization matters because traffic is only valuable if customers can quickly understand and trust the menu they are seeing.","tags":["Business value","Menu conversion","Customer confidence"],"critical":true,"originalQuestionId":"M01"},{"id":"NLM","type":"single","section":"Why Menu Optimization Matters","stem":"A fictional restaurant has strong reviews, low new-customer conversion, and many top menu items without strong visual or descriptive content. They ask for “more orders” but do not want to spend yet. What is the strongest first recommendation?","options":["Launch a broad discount immediately to force demand.","Run a quick menu health check, improve the top items first, then revisit paid growth after the store page is better prepared to convert traffic.","Tell the merchant that menu quality is not connected to sales.","Ignore menu quality and focus only on Sponsored Listings."],"correct":1,"feedback":"The best first move is a low-friction improvement that can help conversion before asking the merchant to invest in more traffic.","tags":["Prioritization","Consultative judgment","Menu conversion"],"critical":true,"originalQuestionId":"M02"},{"id":"KQF","type":"multi","section":"Diagnosis & Prioritization","stem":"Which signals should an Account Manager review before recommending a menu optimization action? Select all that apply.","options":["Photo coverage on top or signature items","Product Mix or best sellers","Customer Insights such as new, occasional, and frequent customers","Sales Trends and order fluctuations","Operation Quality signals such as cancellations or missing items","The merchant’s full bank account number","A password or login code from the merchant"],"correct":[0,1,2,3,4],"feedback":"Strong menu recommendations come from customer, sales, product, and operational signals. Sensitive information is not needed for menu coaching.","tags":["Data literacy","Critical safety","Menu diagnosis"],"critical":true,"originalQuestionId":"M03"},{"id":"PJD","type":"match","section":"Merchant Portal Navigation","stem":"Match each Merchant Portal area with the best use case.","prompts":[{"left":"Insights → Sales","right":"Review sales trends and order fluctuations"},{"left":"Customers → Customer Insights","right":"Understand new, occasional, and frequent customer mix"},{"left":"Marketing → Campaign Reporting","right":"Review live, paused, completed, or scheduled campaign performance"},{"left":"Menu → Menu Manager","right":"Add or edit items, descriptions, availability, categories, and visual content"},{"left":"Settings → Brand / Store Settings","right":"Manage store assets such as logo, header, brand or store settings, and eligible video upload paths"}],"choices":["Manage store assets such as logo, header, brand or store settings, and eligible video upload paths","Review sales trends and order fluctuations","Add or edit items, descriptions, availability, categories, and visual content","Understand new, occasional, and frequent customer mix","Review live, paused, completed, or scheduled campaign performance"],"feedback":"Portal navigation matters because the Account Manager must guide the merchant to the right evidence and action without wasting call time.","tags":["Merchant Portal","Tool navigation"],"critical":false,"originalQuestionId":"M04"},{"id":"WRE","type":"single","section":"Descriptions & Customer Confidence","stem":"Why do strong menu descriptions matter for new customers?","options":["They reduce uncertainty by explaining ingredients, portion, preparation, and what makes the item appealing.","They are only useful for restaurants with poor ratings.","They should replace accurate pricing and availability.","They should be long enough to include every internal note the restaurant has."],"correct":0,"feedback":"Descriptions help customers decide without calling the store or guessing what an item includes.","tags":["Menu descriptions","Customer confidence"],"critical":false,"originalQuestionId":"M05"},{"id":"YUP","type":"multi","section":"Photos & Visual Quality","stem":"Which are valid quality requirements or best practices for item photos? Select all that apply.","options":["Clearly show the menu item","Use proper lighting and focus","Avoid text, graphics, or promotional overlays","Use a neutral or clean background when possible","Include competitor names to show a price comparison","Use blurry images if the item is popular enough"],"correct":[0,1,2,3],"feedback":"Item photos should help customers understand the food clearly. Text overlays, competitor references, and low-quality images create risk.","tags":["Photo coverage","Content quality"],"critical":false,"originalQuestionId":"M06"},{"id":"VLA","type":"single","section":"Photos & Visual Quality","stem":"A top-selling item has no photo, while lower-volume items have photos. What should the Account Manager prioritize?","options":["Leave the menu as-is because top items sell anyway.","Prioritize a photo for the top-selling or high-margin item because it can improve conversion where demand already exists.","Only update the newest item on the menu.","Start a discount on the lower-volume item because it has a photo."],"correct":1,"feedback":"Prioritizing best sellers or high-margin items is a practical way to make limited menu work matter.","tags":["Prioritization","Product Mix","Photo coverage"],"critical":false,"originalQuestionId":"M07"},{"id":"DRC","type":"single","section":"Prioritization","stem":"The merchant says they do not have time for a full menu cleanup this week. Which response best protects momentum?","options":["Ask them to update the entire menu immediately or pause the conversation.","Suggest starting with the five highest-impact items: top sellers, high-margin items, or items the merchant wants to grow.","Skip menu work and push a discount instead.","Tell them the Account Manager will decide all item names without confirmation."],"correct":1,"feedback":"A focused first step is more realistic than asking the merchant to fix everything at once.","tags":["Prioritization","Merchant empathy","Next step"],"critical":false,"originalQuestionId":"M08"},{"id":"UMZ","type":"multi","section":"Marketplace Videos","stem":"Which store-page video guidelines should the Account Manager recognize? Select all that apply.","options":["Food should be the main focus and centered in the frame","The file should be a supported video format and under the approved file-size limit","Vertical format is expected for store-page video","Text or graphic overlays should be avoided","People, competitor references, prices, and inappropriate content can create moderation risk","The video should include a visible phone number so customers can call directly"],"correct":[0,1,2,3,4],"feedback":"Good video guidance protects approval quality: food-focused, clear, vertical, and free of restricted content.","tags":["Video basics","Content moderation"],"critical":false,"originalQuestionId":"M09"},{"id":"JSE","type":"single","section":"Marketplace Videos","stem":"A merchant has strong food videos on social media and asks what to do next. What is the best Account Manager action?","options":["Download the videos and upload them without the merchant’s confirmation.","Ask whether the merchant owns the content, confirm it fits guidelines, and guide them to upload through Merchant Portal settings or connect an eligible professional Instagram account.","Tell the merchant that videos are never useful on DoorDash.","Ask the merchant to add text overlays with prices to make the video more promotional."],"correct":1,"feedback":"Video activation should respect ownership, content quality, and the approved Merchant Portal path.","tags":["Video basics","Merchant Portal","Content ownership"],"critical":true,"originalQuestionId":"M10"},{"id":"LHT","type":"multi","section":"Descriptions & Customer Confidence","stem":"Which details make a menu description stronger? Select all that apply.","options":["Main ingredients","Preparation style when relevant","Flavor profile or texture when helpful","Portion or serving context when available","All internal kitchen notes and supplier information","Unsupported health claims"],"correct":[0,1,2,3],"feedback":"Good descriptions are customer-facing, useful, and accurate. They should not include unsupported claims or unnecessary internal notes.","tags":["Menu descriptions","Content quality"],"critical":false,"originalQuestionId":"M11"},{"id":"CEN","type":"match","section":"Data Literacy","stem":"Match each signal with the best Account Manager interpretation.","prompts":[{"left":"Product Mix","right":"Which items are driving orders or deserve focused improvement"},{"left":"Sales Trends","right":"Whether sales are increasing, decreasing, or fluctuating over time"},{"left":"Customer Insights","right":"Whether the store needs more new customers, repeat behavior, or both"},{"left":"Operation Quality","right":"Whether service issues could hurt customer experience before more demand is added"},{"left":"Campaign Reporting","right":"How current or previous marketing efforts performed"}],"choices":["Whether the store needs more new customers, repeat behavior, or both","How current or previous marketing efforts performed","Which items are driving orders or deserve focused improvement","Whether service issues could hurt customer experience before more demand is added","Whether sales are increasing, decreasing, or fluctuating over time"],"feedback":"A strong Account Manager does not recommend from memory alone; they connect the right signal to the right business question.","tags":["Data literacy","Merchant Portal"],"critical":false,"originalQuestionId":"M12"},{"id":"FNO","type":"single","section":"Operational Sequencing","stem":"A store has avoidable cancellations and missing-item complaints. The owner wants to “turn on campaigns.” What should the Account Manager do first?","options":["Recommend growth immediately because more orders fix operational issues.","Acknowledge the growth goal, review the operational friction, and stabilize the experience before driving more demand.","Ignore the quality metrics and ask for a higher budget.","Tell the merchant they cannot improve without lowering prices."],"correct":1,"feedback":"Growth should not be layered on top of a poor customer experience. Operational friction can reduce conversion, repeat behavior, and trust.","tags":["Operation Quality","Sequencing","Critical judgment"],"critical":true,"originalQuestionId":"M13"},{"id":"RUD","type":"multi","section":"Documentation","stem":"After a menu optimization conversation, what should the Account Manager document? Select all that apply.","options":["Merchant goal and business reason for the recommendation","Evidence reviewed, such as top items, missing visual content, descriptions, sales or customer signals","Agreed next step, owner, and follow-up date","Any pending information needed from the merchant","The merchant’s password so the next person can log in faster","Assumptions that were not confirmed with the merchant"],"correct":[0,1,2,3],"feedback":"Documentation should preserve context, ownership, and pending items without storing sensitive data or invented facts.","tags":["Documentation","Critical safety"],"critical":true,"originalQuestionId":"M14"},{"id":"QBI","type":"single","section":"Transition to Growth","stem":"When is it most appropriate to introduce paid growth after menu optimization?","options":["After the Account Manager has connected the menu work to the merchant’s goal and confirmed the store page is reasonably ready to convert traffic.","Before any discovery because campaigns are always the first step.","Only after every item on the menu has a perfect photo and description.","When the merchant has an unresolved trust blocker that should be ignored."],"correct":0,"feedback":"The strongest transition is tied to the merchant goal: improve conversion basics, then increase qualified traffic when it makes sense.","tags":["Growth transition","Consultative selling"],"critical":false,"originalQuestionId":"M15"},{"id":"ZMK","type":"multi","section":"Critical Judgment","stem":"Which behaviors are serious menu optimization mistakes? Select all that apply.","options":["Promising a specific sales lift from photos, descriptions, or videos without approved evidence","Asking the merchant for a password or login code","Using content the merchant does not own or has not approved","Making up item ingredients or descriptions to save time","Starting with a small set of high-impact items when the merchant has limited time","Documenting the agreed owner and follow-up date"],"correct":[0,1,2,3],"feedback":"Critical risks include overpromising, unsafe data handling, unapproved content, and invented facts. A focused first step and clear documentation are good practice.","tags":["Critical safety","Content quality","Documentation"],"critical":true,"originalQuestionId":"M16"},{"id":"OVT","type":"single","section":"Merchant Portal Access","stem":"A merchant says they cannot find where to update menu content. What is the best Account Manager response?","options":["Ask for the merchant’s password and do it for them.","Guide them to the relevant Merchant Portal area, confirm whether they have the correct access, and provide a short recap of the next step.","Tell them to search randomly until they find it.","Create a paid campaign to avoid the portal issue."],"correct":1,"feedback":"The Account Manager should build merchant confidence and confirm access without requesting unsafe credentials.","tags":["Merchant Portal","Access","Critical safety"],"critical":true,"originalQuestionId":"M17"},{"id":"EPR","type":"single","section":"Customer Mix","stem":"Customer Insights show many new customers visit but do not order. Which menu-focused interpretation is most useful?","options":["The store may have an acquisition problem only, so menu quality is irrelevant.","The store may be getting attention but not enough confidence to convert; visuals, descriptions, item organization, and trust signals should be reviewed.","The Account Manager should stop looking at Customer Insights.","The only answer is to increase delivery radius."],"correct":1,"feedback":"Customer behavior can reveal whether the issue is traffic, conversion, repeat behavior, or a mix of those problems.","tags":["Customer Insights","Menu conversion"],"critical":false,"originalQuestionId":"M18"},{"id":"AXD","type":"match","section":"Improvement Logic","stem":"Match each menu improvement to the strongest business reason.","prompts":[{"left":"Add clear item photos","right":"Help customers see what they are ordering and build confidence"},{"left":"Improve descriptions","right":"Reduce uncertainty about ingredients, flavor, portion, or preparation"},{"left":"Clean up categories and item organization","right":"Make it easier for customers to find the right item quickly"},{"left":"Add eligible food-focused video content","right":"Bring brand, food, and atmosphere to life when content meets guidelines"}],"choices":["Reduce uncertainty about ingredients, flavor, portion, or preparation","Bring brand, food, and atmosphere to life when content meets guidelines","Help customers see what they are ordering and build confidence","Make it easier for customers to find the right item quickly"],"feedback":"Each optimization action should be tied to a clear customer behavior reason, not treated as a random checklist item.","tags":["Business value","Menu conversion"],"critical":false,"originalQuestionId":"M19"},{"id":"HWR","type":"single","section":"Support vs Growth","stem":"A merchant has missing menu content but also says a payment issue from last week is still unresolved. What is the best Account Manager response?","options":["Ignore the payment concern and continue pitching menu work.","Acknowledge the unresolved issue, confirm the correct follow-up path, and return to menu or growth only after the trust blocker is addressed.","Tell the merchant that payment issues are not relevant to the relationship.","Launch ads to compensate for frustration."],"correct":1,"feedback":"Trust blockers should be handled before optimization or growth pitches. Selling over an unresolved issue can damage the relationship.","tags":["Trust","Support-first judgment","Critical judgment"],"critical":true,"originalQuestionId":"M20"}],"duration":"30–45 minutes","themeNote":"DoorDash-style red, clean cards, and dark mode.","recipientEmail":"saul.chavez@ext.doordash.com","version":"v11_google_form_direct_confirmation"};
+const STORAGE_KEY = 'dd_am_assessment_' + moduleData.slug + '_v11_google_form_direct';
+const recipientEmail = moduleData.recipientEmail;
+const GOOGLE_FORM_BACKEND = Object.assign({enabled:false, backend:'google-form', version:'v11-google-form-direct-visible-confirmation', actionUrl:'', securityToken:'', entries:{}}, window.DD_ASSESSMENT_GOOGLE_FORM_CONFIG || {});
+let state = {
+  profile:{}, answers:{}, orderConfirmed:{}, submitted:false, submittedAt:null, attemptId:null, finalResult:null, theme:'light'
+};
+
+function load(){
+  try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw) state = {...state, ...JSON.parse(raw)}; }catch(e){ console.warn(e); }
+  if(!state.profile.attemptDate){ state.profile.attemptDate = new Date().toISOString().slice(0,10); }
+}
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1700); }
+function esc(s){ return String(s ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+function normSet(arr){ return [...new Set((arr||[]).map(String))].sort(); }
+function sameArray(a,b){ const aa=normSet(a), bb=normSet(b); return aa.length===bb.length && aa.every((v,i)=>v===bb[i]); }
+function today(){ return new Date().toISOString().slice(0,10); }
+
+function initTheme(){
+  document.documentElement.setAttribute('data-theme', state.theme || 'light');
+  document.getElementById('themeToggle').textContent = (state.theme === 'dark') ? 'Light mode' : 'Dark mode';
+}
+function toggleTheme(){ state.theme = (state.theme === 'dark') ? 'light' : 'dark'; save(); initTheme(); }
+
+function renderProfile(){
+  const ids = ['amName','cohort','trainer','attemptDate'];
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    el.value = state.profile[id] || (id==='attemptDate' ? today() : '');
+    el.addEventListener('input',()=>{ if(state.submitted) return; state.profile[id]=el.value; save(); });
+    el.disabled = !!state.submitted;
+  });
+}
+
+function isAnswered(q){
+  const a=state.answers[q.id];
+  if(q.type==='single') return a !== undefined && a !== null && a !== '';
+  if(q.type==='multi') return Array.isArray(a) && a.length>0;
+  if(q.type==='match') return a && q.prompts.every(p=>a[p.left]);
+  if(q.type==='order') return Array.isArray(a) && a.length===q.correct.length && state.orderConfirmed && state.orderConfirmed[q.id];
+  return false;
+}
+function scoreQuestion(q){
+  const a=state.answers[q.id];
+  if(q.type==='single') return Number(a)===q.correct ? 1 : 0;
+  if(q.type==='multi'){
+    const selected = new Set((a||[]).map(Number));
+    const correct = new Set(q.correct.map(Number));
+    const totalCorrect = correct.size || 1;
+    let truePos=0, falsePos=0;
+    selected.forEach(x=>{ if(correct.has(x)) truePos++; else falsePos++; });
+    return Math.max(0, Math.min(1, (truePos - falsePos) / totalCorrect));
+  }
+  if(q.type==='match'){
+    if(!a) return 0;
+    let ok=0;
+    q.prompts.forEach(p=>{ if(a[p.left] === p.right) ok++; });
+    return ok / q.prompts.length;
+  }
+  if(q.type==='order'){
+    if(!Array.isArray(a)) return 0;
+    let ok=0;
+    q.correct.forEach((item,i)=>{ if(a[i] === item) ok++; });
+    return ok / q.correct.length;
+  }
+  return 0;
+}
+function selectedText(q){
+  const a=state.answers[q.id];
+  if(q.type==='single') return q.options[Number(a)] ?? 'Not answered';
+  if(q.type==='multi') return (a||[]).map(i=>q.options[Number(i)]).join('; ') || 'Not answered';
+  if(q.type==='match') return q.prompts.map(p=>`${p.left} => ${(a&&a[p.left])||'Not answered'}`).join('; ');
+  if(q.type==='order') return (a||[]).map((x,i)=>`${i+1}. ${x}`).join('; ') || 'Not answered';
+  return '';
+}
+function correctText(q){
+  if(q.type==='single') return q.options[q.correct];
+  if(q.type==='multi') return q.correct.map(i=>q.options[i]).join('; ');
+  if(q.type==='match') return q.prompts.map(p=>`${p.left} => ${p.right}`).join('; ');
+  if(q.type==='order') return q.correct.map((x,i)=>`${i+1}. ${x}`).join('; ');
+  return '';
+}
+function answerStatus(q){ const s=scoreQuestion(q); if(s>=.999) return 'Correct'; if(s>0) return 'Partial'; return 'Incorrect'; }
+
+function ensureOrderAnswer(q){
+  if(!Array.isArray(state.answers[q.id]) || state.answers[q.id].length!==q.items.length){ state.answers[q.id]=[...q.items]; save(); }
+}
+
+function renderQuestions(){
+  const wrap=document.getElementById('questionsWrap');
+  let html='';
+  let lastSection='';
+  moduleData.questions.forEach((q,i)=>{
+    if(q.section !== lastSection){
+      html += `<div class="chip red" style="margin-top:18px">${esc(q.section)}</div>`;
+      lastSection = q.section;
+    }
+    html += renderQuestion(q,i);
+  });
+  wrap.innerHTML=html;
+  bindQuestionEvents();
+  updateProgress();
+  if(state.submitted){ lockAssessment(); showResults(false); }
+}
+function renderQuestion(q,i){
+  const qnum = i+1;
+  const answered = isAnswered(q);
+  const crit = '';
+  let body='';
+  if(q.type==='single'){
+    body = `<div class="options">${q.options.map((o,idx)=>{
+      const sel = Number(state.answers[q.id])===idx;
+      return `<label class="option ${sel?'selected':''}" data-qid="${q.id}" data-type="single" data-value="${idx}"><input type="radio" name="${q.id}" ${sel?'checked':''} ${state.submitted?'disabled':''}> <span>${esc(o)}</span></label>`;
+    }).join('')}</div>`;
+  } else if(q.type==='multi'){
+    const ans = new Set((state.answers[q.id]||[]).map(Number));
+    body = `<div class="options">${q.options.map((o,idx)=>{
+      const sel = ans.has(idx);
+      return `<label class="option ${sel?'selected':''}" data-qid="${q.id}" data-type="multi" data-value="${idx}"><input type="checkbox" ${sel?'checked':''} ${state.submitted?'disabled':''}> <span>${esc(o)}</span></label>`;
+    }).join('')}</div>`;
+  } else if(q.type==='match'){
+    const ans = state.answers[q.id]||{};
+    body = `<div class="match-table">${q.prompts.map((p,idx)=>`
+      <div class="match-row"><div class="prompt">${esc(p.left)}</div><select data-match-q="${q.id}" data-left="${esc(p.left)}" ${state.submitted?'disabled':''}><option value="">Choose best match</option>${q.choices.map(c=>`<option ${ans[p.left]===c?'selected':''}>${esc(c)}</option>`).join('')}</select></div>`).join('')}</div>`;
+  } else if(q.type==='order'){
+    ensureOrderAnswer(q);
+    const arr = state.answers[q.id];
+    body = `<div class="order-list" data-order-q="${q.id}">${arr.map((item,idx)=>`
+      <div class="order-item"><span class="num">${idx+1}</span><strong>${esc(item)}</strong><span class="move"><button class="iconbtn" data-move="up" data-q="${q.id}" data-index="${idx}" ${idx===0||state.submitted?'disabled':''}>↑</button><button class="iconbtn" data-move="down" data-q="${q.id}" data-index="${idx}" ${idx===arr.length-1||state.submitted?'disabled':''}>↓</button></span></div>`).join('')}<button class="btn secondary" style="justify-self:start;margin-top:8px" data-confirm-order="${q.id}" ${state.submitted?'disabled':''}>Confirm this order</button></div>`;
+  }
+  return `<article class="question" id="q${qnum}" data-qid="${q.id}">
+    <div class="qhead"><div class="qmeta"><span class="chip red">${qnum}.</span></div><span class="chip ${answered?'red':''}" id="status-${q.id}">${answered?'Answered':'Open'}</span></div>
+    <p class="qtitle">${esc(q.stem)}</p>
+    ${body}
+    <div class="feedback" id="fb-${q.id}"></div>
+  </article>`;
+}
+function bindQuestionEvents(){
+  document.querySelectorAll('.option').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      if(state.submitted) return;
+      const qid=el.dataset.qid;
+      const q=moduleData.questions.find(x=>x.id===qid);
+      const val=Number(el.dataset.value);
+      if(q.type==='single') state.answers[qid]=val;
+      else {
+        const set=new Set((state.answers[qid]||[]).map(Number));
+        if(set.has(val)) set.delete(val); else set.add(val);
+        state.answers[qid]=[...set].sort((a,b)=>a-b);
+      }
+      save(); renderQuestions();
+    });
+  });
+  document.querySelectorAll('[data-match-q]').forEach(sel=>{
+    sel.addEventListener('change',()=>{
+      if(state.submitted) return;
+      const qid=sel.dataset.matchQ; const left=sel.dataset.left;
+      state.answers[qid]=state.answers[qid]||{};
+      state.answers[qid][left]=sel.value;
+      save(); updateProgress();
+    });
+  });
+  document.querySelectorAll('[data-move]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(state.submitted) return;
+      const qid=btn.dataset.q; const idx=Number(btn.dataset.index); const dir=btn.dataset.move;
+      const arr=[...state.answers[qid]];
+      const swap = dir==='up' ? idx-1 : idx+1;
+      if(swap<0 || swap>=arr.length) return;
+      [arr[idx],arr[swap]]=[arr[swap],arr[idx]];
+      state.answers[qid]=arr; state.orderConfirmed=state.orderConfirmed||{}; state.orderConfirmed[qid]=true; save(); renderQuestions();
+    });
+  });
+  document.querySelectorAll('[data-confirm-order]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(state.submitted) return;
+      state.orderConfirmed=state.orderConfirmed||{}; state.orderConfirmed[btn.dataset.confirmOrder]=true; save(); renderQuestions();
+    });
+  });
+}
+function updateProgress(){
+  // Progress is tracked internally only. The assessment no longer shows a question map or total count to the Account Manager.
+  const answered = moduleData.questions.filter(isAnswered).length;
+  const pct = Math.round(answered/moduleData.questions.length*100);
+  const answeredEl = document.getElementById('answeredCount');
+  if(answeredEl) answeredEl.textContent = `${answered}/${moduleData.questions.length}`;
+  const textEl = document.getElementById('progressText');
+  if(textEl) textEl.textContent = pct+'%';
+  const barEl = document.getElementById('progressBar');
+  if(barEl) barEl.style.width = pct+'%';
+  renderQnav();
+}
+function renderQnav(){
+  const nav = document.getElementById('qnav');
+  if(nav) nav.innerHTML = '';
+}
+function lockAssessment(){
+  document.querySelectorAll('input,select,textarea').forEach(el=>{ if(el.id!=='reportBox') el.disabled=true; });
+  document.getElementById('finalizeBtn').disabled=true;
+  document.getElementById('saveBtn').disabled=true;
+  document.getElementById('clearBtn').disabled=true;
+  document.querySelectorAll('.question').forEach(q=>q.classList.add('locked'));
+}
+function calculate(){
+  const rows = moduleData.questions.map((q,i)=>({q,index:i,score:scoreQuestion(q),status:answerStatus(q)}));
+  const raw = rows.reduce((a,r)=>a+r.score,0);
+  const score = Math.round(raw / moduleData.questions.length * 100);
+  const breakdown={};
+  rows.forEach(r=>{
+    r.q.tags.forEach(tag=>{ if(!breakdown[tag]) breakdown[tag]={score:0,max:0}; breakdown[tag].score += r.score; breakdown[tag].max += 1; });
+  });
+  const criticalFlags=rows.filter(r=>r.q.critical && r.score<1).map(r=>({id:r.q.id, number:r.index+1, stem:r.q.stem, feedback:r.q.feedback, status:r.status}));
+  const sortedTags = Object.entries(breakdown).map(([tag,v])=>({tag, pct:Math.round(v.score/v.max*100), score:v.score, max:v.max})).sort((a,b)=>a.pct-b.pct);
+  return {score, raw, rows, breakdown:sortedTags, criticalFlags, submittedAt: state.submittedAt || new Date().toISOString()};
+}
+function band(score){
+  if(score<=30) return {title:'0–30 · Extensive review required', text:'Do not continue to live execution without structured review of the full module.'};
+  if(score<=59) return {title:'31–59 · Topic-by-topic calibration needed', text:'The Account Manager has foundations but needs calibration by topic before readiness sign-off.'};
+  if(score<=80) return {title:'60–80 · Focus on specific improvement areas', text: score>=80 ? 'Passing threshold reached at 80, but review the weakest categories and any critical flags before expanding scope.' : 'The Account Manager is close but should focus on targeted gaps and repeat scenario practice.'};
+  return {title:'81–100 · Strengths identified', text:'Use the result to identify strong areas and prepare for next-level execution, consistency, and peer support.'};
+}
+function finalize(){
+  if(state.submitted){ showResults(true); return; }
+  const missing = moduleData.questions.filter(q=>!isAnswered(q));
+  const requiredProfile=['amName','cohort','trainer','attemptDate'];
+  const missingProfile=requiredProfile.filter(id=>!(document.getElementById(id).value||'').trim());
+  if(missingProfile.length){ toast('Complete profile fields first.'); document.getElementById('profile').scrollIntoView({behavior:'smooth'}); return; }
+  if(missing.length){ toast('Answer all questions before finalizing.'); const idx=moduleData.questions.findIndex(q=>q.id===missing[0].id)+1; location.hash='q'+idx; return; }
+  ['amName','cohort','trainer','attemptDate'].forEach(id=>state.profile[id]=document.getElementById(id).value);
+  state.submitted=true;
+  state.submittedAt=new Date().toISOString();
+  state.attemptId = state.attemptId || `${moduleData.slug}-${state.submittedAt.replace(/[-:.TZ]/g,'').slice(0,14)}`;
+  state.finalResult=calculate();
+  save();
+  lockAssessment();
+  showResults(true);
+  toast('Assessment finalized.');
+}
+function showResults(scroll){
+  const result=calculate();
+  state.finalResult=result; save();
+  document.getElementById('results').classList.add('show');
+  document.getElementById('scorePill').textContent=result.score+'%';
+  const b=band(result.score);
+  const pass = result.score>=80 && result.criticalFlags.length===0;
+  const critText = result.criticalFlags.length ? `${result.criticalFlags.length} critical flag(s) require Team Lead calibration.` : 'No critical flags triggered.';
+  document.getElementById('resultSummary').innerHTML = `<div class="score-hero"><div class="score-circle">${result.score}<small>%</small></div><div><p class="band">${esc(b.title)}</p><p class="lede">${esc(b.text)}</p><div style="margin-top:12px"><span class="chip ${pass?'red':'warn'}">${pass?'Pass-ready':'Calibration needed'}</span><span class="chip ${result.criticalFlags.length?'danger':'red'}">${esc(critText)}</span></div></div></div><div class="submit-reminder">Important: your score is visible, but it is not registered yet. Click Submit results before closing this page.<small>Wait until the confirmation message appears. Copy and download buttons are only backup tools for troubleshooting.</small></div>`;
+  renderBreakdown(result);
+  renderReview(result);
+  const report=buildReport(result);
+  document.getElementById('reportBox').value=report;
+  if(scroll) document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+function renderBreakdown(result){
+  const box=document.getElementById('breakdown');
+  const lows=result.breakdown.slice(0,6);
+  const highs=[...result.breakdown].sort((a,b)=>b.pct-a.pct).slice(0,6);
+  box.innerHTML = `<div class="grid two"><div><h3>Focus areas</h3>${lows.map(r=>barRow(r)).join('')}</div><div><h3>Strong areas</h3>${highs.map(r=>barRow(r)).join('')}</div></div>`;
+}
+function barRow(r){ return `<div class="brow"><strong>${esc(r.tag)}</strong><div class="bbar"><span style="width:${r.pct}%"></span></div><b>${r.pct}%</b></div>`; }
+function renderReview(result){
+  const review=document.getElementById('review');
+  review.innerHTML = '<h3>Question review</h3>' + result.rows.map(r=>{
+    const good=r.score>=.999;
+    const partial=r.score>0 && r.score<.999;
+    return `<div class="review-item ${good?'good':'bad'}"><div class="qmeta"><span class="chip red">${r.index+1}.</span><span class="chip ${good?'red': partial?'warn':'danger'}">${r.status} · ${Math.round(r.score*100)}%</span>${r.q.critical?'<span class="chip danger">Critical</span>':''}</div><p><b>${esc(r.q.stem)}</b></p><p><b>Your answer:</b> ${esc(selectedText(r.q))}</p><p><b>Correct / expected:</b> ${esc(correctText(r.q))}</p><p style="color:var(--muted)"><b>Feedback:</b> ${esc(r.q.feedback)}</p></div>`;
+  }).join('');
+}
+function buildReport(result){
+  result = result || calculate();
+  const p=state.profile;
+  const b=band(result.score);
+  const lows=result.breakdown.slice(0,5).map(x=>`${x.tag} ${x.pct}%`).join(', ') || 'None';
+  const highs=[...result.breakdown].sort((a,b)=>b.pct-a.pct).slice(0,5).map(x=>`${x.tag} ${x.pct}%`).join(', ') || 'None';
+  const crit=result.criticalFlags.length ? result.criticalFlags.map(f=>`${f.number}. ${f.stem}`).join('\n') : 'None';
+  const lines=[];
+  lines.push(`${moduleData.title} - Final Report`);
+  lines.push(`Attempt ID: ${state.attemptId || 'DRAFT-' + moduleData.slug}`);
+  lines.push(`Account Manager Name: ${p.amName || ''}`);
+  lines.push(`Cohort: ${p.cohort || ''}`);
+  lines.push(`Trainer: ${p.trainer || ''}`);
+  lines.push(`Date: ${p.attemptDate || ''}`);
+  lines.push(`Module: ${moduleData.moduleShort}`);
+  lines.push(`Submitted At: ${state.submittedAt || new Date().toISOString()}`);
+  lines.push('');
+  lines.push(`Score: ${result.score}/100`);
+  lines.push(`Band: ${b.title}`);
+  lines.push(`Interpretation: ${b.text}`);
+  lines.push(`Passing Threshold: 80+`);
+  lines.push(`Critical Flags: ${result.criticalFlags.length}`);
+  lines.push('');
+  lines.push(`Strong Areas: ${highs}`);
+  lines.push(`Focus Areas: ${lows}`);
+  lines.push('');
+  lines.push('Critical Flag Details:');
+  lines.push(crit);
+  lines.push('');
+  lines.push('Category Breakdown:');
+  result.breakdown.forEach(x=>lines.push(`- ${x.tag}: ${x.pct}%`));
+  lines.push('');
+  lines.push('Full Answer Review:');
+  result.rows.forEach(r=>{
+    lines.push(`\nQ${r.index+1}. ${r.q.stem}`);
+    lines.push(`Question format: ${r.q.type} | Tags: ${r.q.tags.join(', ')}${r.q.critical?' | CRITICAL':''}`);
+    lines.push(`Status: ${r.status} | Credit: ${Math.round(r.score*100)}%`);
+    lines.push(`Your answer: ${selectedText(r.q)}`);
+    lines.push(`Expected: ${correctText(r.q)}`);
+    lines.push(`Feedback: ${r.q.feedback}`);
+  });
+  lines.push('');
+  lines.push('Coaching note: Use this report with quality assurance, shadowing, and Team Lead calibration. The result is diagnostic and should support targeted coaching.');
+  return lines.join('\n');
+}
+async function copyReport(){
+  const report=document.getElementById('reportBox').value || buildReport();
+  try{ await navigator.clipboard.writeText(report); toast('Full report copied.'); }
+  catch(e){ const box=document.getElementById('reportBox'); box.focus(); box.select(); document.execCommand('copy'); toast('Report selected/copied.'); }
+}
+function downloadText(filename, text, type='text/plain'){
+  const blob=new Blob([text],{type}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+function buildSubmissionPayload(result){
+  result = result || calculate();
+  const report = document.getElementById('reportBox').value || buildReport(result);
+  return {
+    source: 'local-html-assessment-v9-google-form',
+    moduleSlug: moduleData.slug,
+    module: moduleData.moduleShort,
+    attemptId: state.attemptId || ('DRAFT-' + moduleData.slug),
+    submittedAt: state.submittedAt || new Date().toISOString(),
+    profile: state.profile,
+    score: result.score,
+    passingThreshold: 80,
+    passed: result.score >= 80 && result.criticalFlags.length === 0,
+    criticalFlags: result.criticalFlags,
+    breakdown: result.breakdown,
+    answers: result.rows.map(r => ({
+      questionNumber: r.index + 1,
+      questionCode: r.q.id,
+      originalQuestionId: r.q.originalQuestionId || '',
+      section: r.q.section,
+      question: r.q.stem,
+      selectedAnswer: selectedText(r.q),
+      expectedAnswer: correctText(r.q),
+      status: r.status,
+      creditPercent: Math.round(r.score * 100),
+      feedback: r.q.feedback,
+      tags: r.q.tags,
+      critical: !!r.q.critical
+    })),
+    report: report,
+    secret: (formConfig().securityToken || '')
+  };
+}
+function openMailDraft(report, result){
+  const p=state.profile;
+  const subject=encodeURIComponent(`${moduleData.moduleShort} Assessment Results - ${p.amName || 'Account Manager'} - ${result.score}%`);
+  let body=report;
+  if(body.length>7000){
+    body = `Full report copied to clipboard. Please paste it into this email before sending.
+
+Summary:
+Account Manager: ${p.amName || ''}
+Cohort: ${p.cohort || ''}
+Trainer: ${p.trainer || ''}
+Date: ${p.attemptDate || ''}
+Module: ${moduleData.moduleShort}
+Score: ${result.score}/100
+Critical Flags: ${result.criticalFlags.length}
+Focus Areas: ${result.breakdown.slice(0,5).map(x=>x.tag+' '+x.pct+'%').join(', ')}
+`;
+  }
+  window.location.href=`mailto:${recipientEmail}?subject=${subject}&body=${encodeURIComponent(body)}`;
+}
+
+
+function formConfig(){
+  return Object.assign({enabled:false, backend:'google-form', version:'v11-google-form-direct-visible-confirmation', actionUrl:'', securityToken:'', entries:{}}, window.DD_ASSESSMENT_GOOGLE_FORM_CONFIG || GOOGLE_FORM_BACKEND || {});
+}
+function chunkText(text, size, maxChunks){
+  const chunks=[];
+  const source=String(text || '');
+  for(let i=0; i<maxChunks; i++){
+    chunks.push(source.slice(i*size, (i+1)*size));
+  }
+  if(source.length > size * maxChunks){
+    chunks[maxChunks-1] += '\n[TRUNCATED: payload exceeded configured chunk capacity]';
+  }
+  return chunks;
+}
+function googleFormSummaryFields(payload, result){
+  const b=band(result.score);
+  const lows=result.breakdown.slice(0,5).map(x=>`${x.tag} ${x.pct}%`).join(', ') || 'None';
+  const highs=[...result.breakdown].sort((a,b)=>b.pct-a.pct).slice(0,5).map(x=>`${x.tag} ${x.pct}%`).join(', ') || 'None';
+  const p=state.profile || {};
+  const payloadJson=JSON.stringify(payload);
+  const chunks=chunkText(payloadJson, 15000, 12);
+  const fields={
+    backendVersion:'v11-google-form-direct-visible-confirmation',
+    securityToken:formConfig().securityToken || '',
+    attemptId:payload.attemptId || '',
+    source:payload.source || '',
+    moduleSlug:payload.moduleSlug || '',
+    module:payload.module || '',
+    amName:p.amName || '',
+    cohort:p.cohort || '',
+    trainer:p.trainer || '',
+    assessmentDate:p.attemptDate || '',
+    submittedAt:payload.submittedAt || new Date().toISOString(),
+    score:String(payload.score),
+    passingThreshold:String(payload.passingThreshold || 80),
+    passed:payload.passed ? 'true' : 'false',
+    criticalFlagsCount:String((payload.criticalFlags || []).length),
+    scoreBand:b.title,
+    strongAreas:highs,
+    focusAreas:lows
+  };
+  for(let i=1;i<=12;i++){
+    fields['payloadChunk' + String(i).padStart(2,'0')] = chunks[i-1] || '';
+  }
+  return fields;
+}
+function validateGoogleFormConfig(config){
+  if(!config || !config.enabled || !config.actionUrl || !config.entries){ return false; }
+  const required=['backendVersion','securityToken','attemptId','moduleSlug','module','amName','cohort','trainer','assessmentDate','submittedAt','score','passed','criticalFlagsCount','scoreBand','strongAreas','focusAreas','payloadChunk01'];
+  return required.every(key => !!config.entries[key]);
+}
+function postToGoogleForm(fields){
+  return new Promise((resolve, reject)=>{
+    const config=formConfig();
+    if(!validateGoogleFormConfig(config)){
+      reject(new Error('Google Form backend is not configured.'));
+      return;
+    }
+
+    const targetName='dd_google_form_confirmation_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    let targetWindow=null;
+    try{
+      targetWindow = window.open('about:blank', targetName);
+      if(targetWindow){
+        targetWindow.document.write('<!doctype html><title>Submitting results</title><body style="font-family:Arial,sans-serif;padding:24px"><h2>Submitting results...</h2><p>Please wait for the Google Forms confirmation page.</p></body>');
+        targetWindow.document.close();
+      }
+    }catch(e){ targetWindow=null; }
+
+    const form=document.createElement('form');
+    form.method='POST';
+    form.action=config.actionUrl;
+    form.target=targetWindow ? targetName : '_self';
+    form.enctype='application/x-www-form-urlencoded';
+    form.acceptCharset='UTF-8';
+    form.style.position='absolute';
+    form.style.left='-9999px';
+    form.style.width='1px';
+    form.style.height='1px';
+
+    const addField=(name,value)=>{
+      const input=document.createElement('textarea');
+      input.name=name;
+      input.value=String(value ?? '');
+      form.appendChild(input);
+    };
+
+    Object.entries(fields).forEach(([key,value])=>{
+      const entry=config.entries[key];
+      if(!entry) return;
+      addField(entry, value);
+    });
+    addField('pageHistory','0');
+    addField('submit','Submit');
+
+    document.body.appendChild(form);
+    try{
+      form.submit();
+      setTimeout(()=>{ try{form.remove();}catch(e){} }, 1500);
+      resolve(true);
+    }catch(err){
+      try{form.remove();}catch(e){}
+      if(targetWindow && !targetWindow.closed){ try{targetWindow.close();}catch(e){} }
+      reject(err);
+    }
+  });
+}
+async function emailResults(){
+  if(!state.submitted){ toast('Finalize the assessment before submitting results.'); return; }
+  const result=calculate();
+  const payload=buildSubmissionPayload(result);
+  const btn=document.getElementById('emailBtn');
+  const originalText=btn ? btn.textContent : '';
+  if(btn){ btn.disabled=true; btn.textContent='Opening Google Forms confirmation...'; }
+  try{
+    const fields=googleFormSummaryFields(payload, result);
+    await postToGoogleForm(fields);
+    state.resultsSubmittedAt = new Date().toISOString();
+    save();
+    toast('Google Forms submission opened.');
+    setTimeout(()=>{
+      alert('A Google Forms confirmation page should now be open. Your result is registered only if that page says: "Your response has been recorded." If you do not see that confirmation, use Copy full report or contact your trainer.');
+    }, 800);
+  }catch(err){
+    console.warn('Google Form submission failed.', err);
+    alert('The assessment is finalized, but the Google Form could not be opened. Do not close this page. Use Copy full report or Download report, then contact your trainer or Team Lead.');
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent=originalText || 'Submit results'; }
+  }
+}
+
+function clearProgress(){
+  if(state.submitted){ toast('Submitted attempt is locked locally.'); return; }
+  if(confirm('Clear local progress for this assessment?')){ localStorage.removeItem(STORAGE_KEY); location.reload(); }
+}
+function bind(){
+  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+  document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+  document.getElementById('saveBtn').addEventListener('click', ()=>{save(); toast('Progress saved.');});
+  document.getElementById('clearBtn').addEventListener('click', clearProgress);
+  document.getElementById('finalizeBtn').addEventListener('click', finalize);
+  document.getElementById('copyBtn').addEventListener('click', copyReport);
+  document.getElementById('emailBtn').addEventListener('click', emailResults);
+  document.getElementById('downloadBtn').addEventListener('click', ()=>downloadText(`${moduleData.slug}_assessment_report.txt`, document.getElementById('reportBox').value || buildReport()));
+  document.getElementById('jsonBtn').addEventListener('click', ()=>downloadText(`${moduleData.slug}_assessment_result.json`, JSON.stringify(buildSubmissionPayload(calculate()), null, 2), 'application/json'));
+}
+function init(){
+  load(); initTheme(); renderProfile(); renderQuestions(); bind(); updateProgress(); if(state.submitted) showResults(false);
+}
+init();
+</script>
+</body>
+</html>
