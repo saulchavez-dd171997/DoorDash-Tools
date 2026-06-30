@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DoorDash Account Manager Support Cases Assessment</title>
+  <style>
+    :root{
+      --dd-red:#eb1700;
+      --dd-red-dark:#b91400;
+      --dd-red-soft:#fff1ef;
+      --bg:#f7f7f8;
+      --bg2:#ffffff;
+      --card:#ffffff;
+      --ink:#191919;
+      --muted:#62666d;
+      --line:#e6e7ea;
+      --soft:#f1f2f4;
+      --success:#0b7a42;
+      --success-soft:#eaf7f0;
+      --warning:#9a6500;
+      --warning-soft:#fff6df;
+      --danger:#b42318;
+      --danger-soft:#fff0ef;
+      --shadow:0 18px 50px rgba(25,25,25,.08);
+      --shadow2:0 8px 22px rgba(25,25,25,.08);
+      --radius:24px;
+      --radius-sm:16px;
+      --font:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      --mono:"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    [data-theme="dark"]{
+      --bg:#0f1115;
+      --bg2:#13161d;
+      --card:#191d25;
+      --ink:#f5f5f6;
+      --muted:#b5bac3;
+      --line:#303542;
+      --soft:#222733;
+      --dd-red-soft:#331412;
+      --success-soft:#0d2d20;
+      --warning-soft:#312613;
+      --danger-soft:#351413;
+      --shadow:0 18px 55px rgba(0,0,0,.34);
+      --shadow2:0 10px 25px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:
+        radial-gradient(circle at 10% -10%, rgba(235,23,0,.16), transparent 24rem),
+        radial-gradient(circle at 90% 0%, rgba(235,23,0,.08), transparent 22rem),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+      color:var(--ink);
+      line-height:1.5;
+      min-height:100vh;
+    }
+    a{color:var(--dd-red)}
+    button,input,select,textarea{font:inherit}
+    .page{width:min(1180px, calc(100% - 32px));margin:0 auto;padding:28px 0 72px}
+    .hero{
+      border:1px solid var(--line);
+      border-radius:32px;
+      background:linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,241,239,.82));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+      padding:clamp(28px,5vw,58px);
+    }
+    [data-theme="dark"] .hero{background:linear-gradient(135deg, rgba(25,29,37,.94), rgba(51,20,18,.7));}
+    .hero:after{
+      content:"";
+      position:absolute;
+      right:-120px;top:-120px;
+      width:320px;height:320px;border-radius:50%;
+      background:rgba(235,23,0,.12);
+      border:1px solid rgba(235,23,0,.22);
+      pointer-events:none;
+    }
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:18px;position:relative;z-index:1}
+    .dashmark{width:38px;height:22px;border-radius:16px;background:var(--dd-red);position:relative;box-shadow:0 8px 20px rgba(235,23,0,.24)}
+    .dashmark:after{content:"";position:absolute;right:5px;top:6px;width:18px;height:10px;border-radius:999px;background:var(--bg2)}
+    .eyebrow{font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:var(--dd-red)}
+    h1{font-size:clamp(2.3rem,6vw,5.2rem);line-height:.95;letter-spacing:-.06em;margin:0 0 14px;position:relative;z-index:1;max-width:930px}
+    .subtitle{font-size:clamp(1rem,1.9vw,1.22rem);color:var(--muted);max-width:900px;margin:0;position:relative;z-index:1}
+    .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;position:relative;z-index:1}
+    .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.7);border-radius:999px;padding:.62rem .82rem;font-weight:800;font-size:.86rem;color:var(--ink)}
+    [data-theme="dark"] .pill{background:rgba(255,255,255,.05)}
+    .pill.red{background:var(--dd-red-soft);border-color:rgba(235,23,0,.24);color:var(--dd-red)}
+    .topbar{position:sticky;top:0;z-index:30;margin:18px 0 22px;padding:10px;border:1px solid var(--line);border-radius:0 0 22px 22px;background:rgba(247,247,248,.86);backdrop-filter:blur(14px);box-shadow:0 12px 26px rgba(25,25,25,.06);display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+    [data-theme="dark"] .topbar{background:rgba(15,17,21,.86)}
+    .nav{display:flex;gap:8px;overflow:auto;scrollbar-width:thin}
+    .nav a,.nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;border-radius:999px;padding:.56rem .72rem;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;cursor:pointer}
+    .nav a:hover,.nav button:hover{border-color:rgba(235,23,0,.55);color:var(--dd-red)}
+    .btn{border:0;border-radius:999px;background:var(--ink);color:var(--bg2);padding:.82rem 1.05rem;font-weight:900;cursor:pointer;box-shadow:var(--shadow2);transition:.16s ease;white-space:nowrap}
+    [data-theme="dark"] .btn{background:#f5f5f6;color:#121212}
+    .btn:hover{transform:translateY(-1px)}
+    .btn.red{background:var(--dd-red);color:white}
+    .btn.secondary{background:var(--card);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+    .btn.danger{background:var(--danger);color:white}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .grid{display:grid;gap:18px}
+    .grid.two{grid-template-columns:1fr 1fr}
+    .grid.three{grid-template-columns:repeat(3,1fr)}
+    .section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(20px,3.5vw,34px);box-shadow:var(--shadow2);margin:20px 0}
+    .section h2{font-size:clamp(1.5rem,3vw,2.3rem);line-height:1.05;letter-spacing:-.04em;margin:0 0 10px}
+    .section p.lede{color:var(--muted);margin:0;max-width:850px}
+    .field{display:grid;gap:7px;font-size:.78rem;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    input,select,textarea{border:1px solid var(--line);border-radius:14px;background:var(--bg2);color:var(--ink);padding:.82rem .9rem;outline:none;width:100%}
+    [data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#11141a}
+    textarea{min-height:110px;resize:vertical;text-transform:none;letter-spacing:0;font-weight:500}
+    .notice{border:1px dashed rgba(235,23,0,.32);background:var(--dd-red-soft);border-radius:18px;padding:15px 16px;color:var(--muted)}
+    .notice b{color:var(--ink)}
+    .submit-reminder{margin:16px 0 4px;border:2px solid var(--dd-red);background:var(--dd-red-soft);border-radius:18px;padding:16px 18px;color:var(--ink);font-weight:900;box-shadow:var(--shadow)}
+    .submit-reminder small{display:block;color:var(--muted);font-weight:700;margin-top:4px}
+    .progress-wrap{display:grid;gap:8px;margin-top:18px}
+    .progress-label{display:flex;justify-content:space-between;color:var(--muted);font-weight:900;font-size:.85rem}
+    .bar{height:12px;background:var(--soft);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+    .bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--dd-red),#ff6a55);border-radius:999px;transition:width .25s ease}
+    .qnav{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+    .qnav a{width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:50%;display:grid;place-items:center;text-decoration:none;color:var(--muted);font-weight:900;font-size:.78rem}
+    .qnav a.answered{background:var(--dd-red-soft);border-color:rgba(235,23,0,.28);color:var(--dd-red)}
+    .qnav a.flag{box-shadow:0 0 0 2px var(--danger-soft) inset;border-color:rgba(180,35,24,.4)}
+    .question{border:1px solid var(--line);border-radius:22px;background:var(--bg2);padding:22px;margin:18px 0;box-shadow:0 4px 16px rgba(25,25,25,.04);position:relative;scroll-margin-top:92px}
+    [data-theme="dark"] .question{background:#151922}
+    .qhead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}
+    .qmeta{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+    .chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--soft);color:var(--muted);border-radius:999px;padding:.28rem .52rem;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+    .chip.red{background:var(--dd-red-soft);color:var(--dd-red);border-color:rgba(235,23,0,.24)}
+    .chip.warn{background:var(--warning-soft);color:var(--warning);border-color:rgba(154,101,0,.24)}
+    .chip.danger{background:var(--danger-soft);color:var(--danger);border-color:rgba(180,35,24,.24)}
+    .qtitle{font-size:1.13rem;font-weight:850;letter-spacing:-.015em;margin:0 0 16px}
+    .options{display:grid;gap:10px}
+    .option{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:14px 15px;cursor:pointer;display:flex;gap:10px;align-items:flex-start;transition:.15s ease;color:var(--ink)}
+    .option:hover{border-color:rgba(235,23,0,.45);transform:translateY(-1px)}
+    .option input{width:18px;min-width:18px;margin-top:3px;accent-color:var(--dd-red)}
+    .option.selected{border-color:rgba(235,23,0,.55);background:var(--dd-red-soft)}
+    .option.correct{border-color:rgba(11,122,66,.45);background:var(--success-soft)}
+    .option.wrong{border-color:rgba(180,35,24,.45);background:var(--danger-soft)}
+    .match-table{display:grid;gap:10px}
+    .match-row{display:grid;grid-template-columns:1fr 1.25fr;gap:10px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--card)}
+    .prompt{font-weight:850}
+    .order-list{display:grid;gap:10px}
+    .order-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--card)}
+    .num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--dd-red-soft);color:var(--dd-red);font-weight:900}
+    .move{display:flex;gap:5px}
+    .iconbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg2);color:var(--ink);cursor:pointer;font-weight:900}
+    .locked{opacity:.95}
+    .feedback{display:none;margin-top:14px;border-radius:16px;padding:13px 14px;border:1px dashed var(--line);background:var(--soft);color:var(--muted)}
+    .feedback.show{display:block}
+    .results{display:none}
+    .results.show{display:block}
+    .score-hero{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center}
+    .score-circle{width:148px;height:148px;border-radius:50%;display:grid;place-items:center;background:var(--dd-red);color:white;box-shadow:0 18px 45px rgba(235,23,0,.22);font-size:2.45rem;font-weight:950;letter-spacing:-.07em}
+    .score-circle small{font-size:1rem;letter-spacing:0}
+    .band{font-size:1.35rem;font-weight:950;letter-spacing:-.03em;margin:0 0 6px}
+    .breakdown{display:grid;gap:10px;margin-top:18px}
+    .brow{display:grid;grid-template-columns:180px 1fr auto;gap:10px;align-items:center}
+    .bbar{height:10px;background:var(--soft);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+    .bbar span{display:block;height:100%;background:var(--dd-red);width:0}
+    .review{display:grid;gap:10px;margin-top:16px}
+    .review-item{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--bg2)}
+    [data-theme="dark"] .review-item{background:#151922}
+    .review-item.good{border-color:rgba(11,122,66,.35)}
+    .review-item.bad{border-color:rgba(180,35,24,.35)}
+    .reportbox{font-family:var(--mono);font-size:.82rem;white-space:pre-wrap}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(15px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg2);border-radius:999px;padding:.75rem 1rem;font-weight:900;box-shadow:var(--shadow);z-index:60;transition:.22s ease}
+    [data-theme="dark"] .toast{background:#f5f5f6;color:#111}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .foot{color:var(--muted);font-size:.9rem;text-align:center;margin-top:22px}
+    @media (max-width: 860px){.topbar{grid-template-columns:1fr}.grid.two,.grid.three{grid-template-columns:1fr}.score-hero{grid-template-columns:1fr}.match-row{grid-template-columns:1fr}.brow{grid-template-columns:1fr}.page{width:min(100% - 20px,1180px)}}
+    @media print{.topbar,.btn,.qnav,.toast{display:none!important}body{background:white}.section,.hero,.question{box-shadow:none;break-inside:avoid}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero" id="top">
+      <div class="brand"><span class="dashmark" aria-hidden="true"></span><span><span class="eyebrow">Movate Costa Rica · DoorDash Account Management</span></span></div>
+      <h1>DoorDash Account Manager Support Cases Assessment</h1>
+      <p class="subtitle">Scenario-based readiness exam for understanding merchant needs, checking facts, preventing duplicates, documenting support cases, and owning follow-up through closure.</p>
+      <div class="hero-meta">
+        <span class="pill red">Module 2 · Support Cases</span>
+        <span class="pill">30–45 minutes</span>
+        <span class="pill">Passing threshold: 80+</span>
+        <span class="pill">Fictional merchants only</span>
+      </div>
+    </header>
+
+    <div class="topbar">
+      <nav class="nav" aria-label="Page navigation">
+        <a href="#profile">Start details</a>
+        <a href="#questions">Questions</a>
+        <a href="#results">Results</a>
+        <button type="button" id="themeToggle">Dark mode</button>
+      </nav>
+      <div style="display:flex;gap:8px;align-items:center;overflow:auto">
+        <span class="pill">Score <b id="scorePill">—</b></span>
+        <button class="btn secondary" id="printBtn" type="button">Print / PDF</button>
+      </div>
+    </div>
+
+    <main>
+      <section class="section" id="profile">
+        <h2>Start details</h2>
+        <p class="lede">Enter the required details before starting. Once finalized, the local attempt locks and a coaching report is generated for submission.</p>
+        <div class="grid three" style="margin-top:18px">
+          <label class="field">Account Manager name<input id="amName" placeholder="Full name" autocomplete="name"></label>
+          <label class="field">Cohort<input id="cohort" placeholder="Training cohort / wave"></label>
+          <label class="field">Trainer<input id="trainer" placeholder="Trainer or Team Lead"></label>
+          <label class="field">Date<input id="attemptDate" type="date"></label>
+          <label class="field">Module<input value="Support Cases" disabled></label>
+        </div>
+      </section>
+
+      <section class="section" id="questions">
+        <h2>Assessment questions</h2>
+        <p class="lede">Answer all questions. Some questions use matching and scenario decisions instead of only standard multiple choice to measure job judgment, not memorization.</p>
+        <div id="questionsWrap"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+          <button class="btn red" id="finalizeBtn" type="button">Finalize assessment</button>
+          <button class="btn secondary" id="saveBtn" type="button">Save progress</button>
+          <button class="btn secondary" id="clearBtn" type="button">Clear local progress</button>
+        </div>
+      </section>
+
+      <section class="section results" id="results">
+        <h2>Final result and coaching report</h2>
+        <div id="resultSummary"></div>
+        <div id="breakdown" class="breakdown"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:20px 0">
+          <button class="btn red" id="emailBtn" type="button">Submit results</button>
+          <button class="btn secondary" id="copyBtn" type="button">Copy full report</button>
+          <button class="btn secondary" id="downloadBtn" type="button">Download .txt report</button>
+          <button class="btn secondary" id="jsonBtn" type="button">Download data file</button>
+        </div>
+        <div class="notice" style="margin-bottom:14px">After finalizing, the score is not recorded until Submit results is clicked. Submit results will send a compact response in this same tab and take you to the official Google Forms confirmation page. Your result is registered only when that page says: Your response has been recorded. Copy and download are backup tools for troubleshooting only.</div>
+        <label class="field">Backup full report<textarea id="reportBox" class="reportbox" readonly></textarea></label>
+        <div id="review" class="review"></div>
+      </section>
+    </main>
+    <footer class="foot">Internal training assessment for active merchant account management. V13 compact Google Form submission. Validate process updates with official resources before using results for coaching decisions.</footer>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<script>
+window.DD_ASSESSMENT_GOOGLE_FORM_CONFIG = {
+  enabled: true,
+  backend: 'google-form',
+  version: 'v13-google-form-compact-safe',
+  actionUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSdS-hfITYEsiq96LNjHhpDFOT7GaMCUsrt6anSdXL998mZVIA/formResponse',
+  securityToken: 'DD-AM-TRAINING-V9',
+  entries: {
+    backendVersion: 'entry.944347711',
+    securityToken: 'entry.2043209587',
+    attemptId: 'entry.1826776542',
+    source: 'entry.1792796140',
+    moduleSlug: 'entry.1820527432',
+    module: 'entry.683106474',
+    amName: 'entry.2039635815',
+    cohort: 'entry.477605573',
+    trainer: 'entry.1645887859',
+    assessmentDate: 'entry.2083282923',
+    submittedAt: 'entry.2140637666',
+    score: 'entry.1709185299',
+    passingThreshold: 'entry.1442687625',
+    passed: 'entry.944274808',
+    criticalFlagsCount: 'entry.1208454027',
+    scoreBand: 'entry.97639594',
+    strongAreas: 'entry.130970967',
+    focusAreas: 'entry.1489959066',
+    payloadChunk01: 'entry.804381449',
+    payloadChunk02: 'entry.750243362',
+    payloadChunk03: 'entry.1436720290',
+    payloadChunk04: 'entry.558210288',
+    payloadChunk05: 'entry.2021021047',
+    payloadChunk06: 'entry.1459123753',
+    payloadChunk07: 'entry.492585984',
+    payloadChunk08: 'entry.1033992862',
+    payloadChunk09: 'entry.36563253',
+    payloadChunk10: 'entry.592336073',
+    payloadChunk11: 'entry.1658021750',
+    payloadChunk12: 'entry.1341339611'
+  }
+};
+</script>
+<script>
+const moduleData = {"slug":"support_cases","module":"Module 2 · Support Cases","moduleShort":"Support Cases","title":"DoorDash Account Manager Support Cases Assessment","subtitle":"Scenario-based readiness exam for understanding merchant needs, checking facts, preventing duplicates, documenting support cases, and owning follow-up through closure.","questions":[{"id":"BQR","type":"single","section":"Merchant Need Discovery","stem":"A merchant says, “Something is wrong with my DoorDash account, can you open a case?” What should the Account Manager do first?","options":["Create a case immediately using the first category that seems close.","Clarify the issue, business impact, affected store, requested action, and what has already been checked before deciding the case path.","Tell the merchant to contact general support and end the conversation.","Ask for the merchant’s password to inspect the account faster."],"correct":1,"feedback":"The Account Manager must understand the merchant need before choosing a category or writing a case.","tags":["Discovery","Merchant need","Critical safety"],"critical":true,"originalQuestionId":"S01"},{"id":"YMN","type":"multi","section":"Pre-Case Fact Checking","stem":"Before creating a standard support case, what should the Account Manager check or confirm? Select all that apply.","options":["Whether the issue is for an active merchant account","Store identification number or business identification number when available","Whether an existing case for the same issue already exists in Figment or Salesforce","Whether the merchant provided the exact requested action and relevant details","Whether the issue can be confirmed in available DoorDash tools or merchant-facing resources","The merchant’s full bank account number","A login code or password"],"correct":[0,1,2,3,4],"feedback":"Good case work starts with facts, duplicate checks, requested action, and safe identifiers. Sensitive credentials should not be collected.","tags":["Figment","Fact checking","Critical safety"],"critical":true,"originalQuestionId":"S02"},{"id":"KVD","type":"single","section":"Figment & Duplicate Checks","stem":"Figment shows an open case from yesterday for the same store and the same issue. What is the best next action?","options":["Create a new duplicate case so the issue looks more urgent.","Review the existing case, add or gather missing information if needed, follow the approved follow-up path, and avoid creating a duplicate unless there is a separate issue.","Close your notes without telling the merchant anything.","Tell the merchant the case is guaranteed to be solved today."],"correct":1,"feedback":"Duplicate cases can slow resolution and confuse ownership. The Account Manager should use the existing case when it is the same issue.","tags":["Figment","Duplicate prevention","Follow-up"],"critical":true,"originalQuestionId":"S03"},{"id":"MTA","type":"multi","section":"Missing Information","stem":"A merchant says, “My payout is missing,” but gives no details. Which information is most important to confirm before submitting or updating the case? Select all that apply.","options":["Store identification number or business identification number","Which payout or deposit period is affected","What amount or deposit the merchant expected, if known","Whether the issue appears in payment reporting or related tools","Impact or urgency explained by the merchant","The full bank account number","The merchant’s account password"],"correct":[0,1,2,3,4],"feedback":"Payment cases need enough facts to investigate, but the Account Manager should not collect unnecessary sensitive data.","tags":["Payment facts","Missing info","Critical safety"],"critical":true,"originalQuestionId":"S04"},{"id":"GWH","type":"single","section":"Missing Information","stem":"A merchant asks to update store hours but only says, “We changed our schedule.” What is the best missing-information response?","options":["Submit the case with “please update hours” and no schedule details.","Confirm the affected store, exact days, opening and closing times, time zone if needed, effective date, and whether the change is temporary or ongoing.","Ask the merchant for bank details.","Tell the merchant hours cannot be changed."],"correct":1,"feedback":"A simple case can still fail if the requested change is not specific enough.","tags":["Case readiness","Store settings","Missing info"],"critical":false,"originalQuestionId":"S05"},{"id":"XCA","type":"multi","section":"Sensitive Data","stem":"Which details should not be included in a support case unless an approved process explicitly requires them? Select all that apply.","options":["Full bank account number","Social Security number or full tax identification number","Passwords, one-time login codes, or security answers","Unnecessary personal data unrelated to the issue","Store identification number","Business identification number"],"correct":[0,1,2,3],"feedback":"Safe support documentation includes the facts needed to solve the issue, not unnecessary sensitive information.","tags":["Sensitive data","Critical safety"],"critical":true,"originalQuestionId":"S06"},{"id":"FJL","type":"single","section":"Case Scope","stem":"A merchant reports two unrelated issues: a missing payout and a request to change how orders are received. What should the Account Manager recommend?","options":["Put both issues into one case because it is faster for the Account Manager.","Create or route separate cases because unrelated support actions need different ownership and details.","Only handle the easier issue and ignore the other.","Ask the merchant to choose one and never return to the second."],"correct":1,"feedback":"Separate issues usually need separate cases so each team can resolve the correct action with the correct context.","tags":["Case scope","Routing judgment"],"critical":false,"originalQuestionId":"S07"},{"id":"NHP","type":"single","section":"Description Quality","stem":"Which Description of Update is strongest?","options":["Merchant mad. Please fix ASAP.","Store identification number: 123456. Business identification number: not provided. Merchant reports the June 14 deposit is missing. Requested action: investigate missing deposit and confirm next steps. Relevant details: merchant expected a deposit for last week; exact amount not provided. Impact: merchant says payout affects cash flow. Missing information: expected amount if available.","The merchant is probably right and DoorDash definitely owes money.","Fix payment today, promised by Account Manager."],"correct":1,"feedback":"A strong update is specific, factual, action-oriented, and transparent about missing information without inventing facts or timelines.","tags":["Description quality","Documentation","Critical safety"],"critical":true,"originalQuestionId":"S08"},{"id":"PCU","type":"single","section":"Timeline & Expectations","stem":"The merchant asks, “When will this be fixed?” No approved timeline was provided. What should the Account Manager say?","options":["It will definitely be fixed today.","I will document the issue clearly, confirm the case is created or updated, and follow the approved follow-up path. I do not want to promise a timeline that has not been confirmed.","There is no point checking the case status.","Support always resolves everything in one hour."],"correct":1,"feedback":"The Account Manager should create confidence through ownership and follow-up, not unsupported promises.","tags":["Expectation setting","Critical safety","Follow-up"],"critical":true,"originalQuestionId":"S09"},{"id":"VRE","type":"match","section":"Tool-Based Fact Checking","stem":"Match each fact-checking need with the best place to start.","prompts":[{"left":"Check whether another support case already exists","right":"Figment or Salesforce case history"},{"left":"Confirm current store hours or store-level settings","right":"Merchant Portal or account tools"},{"left":"Review whether a merchant has sent previous notes or outreach","right":"Account activity and communication history"},{"left":"Validate whether a public-facing answer exists for the merchant","right":"DoorDash Merchant Learning Center or official merchant-facing resources"}],"choices":["Account activity and communication history","DoorDash Merchant Learning Center or official merchant-facing resources","Merchant Portal or account tools","Figment or Salesforce case history"],"feedback":"Good support work checks the right source before creating avoidable or incomplete cases.","tags":["Tool navigation","Fact checking","Figment"],"critical":false,"originalQuestionId":"S10"},{"id":"WAB","type":"multi","section":"Follow-up & Closure","stem":"After case creation, which actions protect follow-up and closure? Select all that apply.","options":["Confirm the Account Manager receives the support case email after creation","Save the case reference in notes or the tracking process","Set a follow-up reminder based on the approved process","Monitor whether additional information is requested","Create duplicate cases every few hours until someone responds","Promise a result that has not been approved"],"correct":[0,1,2,3],"feedback":"Closure requires ownership after submission: confirmation, tracking, follow-up, and response to pending information.","tags":["Follow-up","Closure","Critical safety"],"critical":true,"originalQuestionId":"S11"},{"id":"RPZ","type":"single","section":"Pending Information","stem":"Support replies asking for missing documentation from the merchant. What should the Account Manager do?","options":["Ignore the request because the case was already created.","Collect only the requested information, avoid unnecessary sensitive data, update the case clearly, and confirm the next follow-up step.","Ask the merchant for every document they have ever used.","Create a new case instead of updating the existing one."],"correct":1,"feedback":"A case is not complete just because it was submitted. Pending information must be handled accurately and safely.","tags":["Pending info","Case update","Sensitive data"],"critical":true,"originalQuestionId":"S12"},{"id":"HFD","type":"single","section":"Routing Calibration","stem":"An active merchant wants to update regular operating hours for one store. Which category is best?","options":["Account settings → Store Hours","Payment → Missing deposit","Merchant portal → Password reset","Order Protocol → Phone issues"],"correct":0,"feedback":"Store hours are an account setting change, not a payment, portal password, or order-receiving issue.","tags":["Category calibration","Account settings"],"critical":false,"originalQuestionId":"S13"},{"id":"JXR","type":"single","section":"Routing Calibration","stem":"The merchant reports that an expected payout did not arrive. Which category is best?","options":["Account settings → Store Status","Payment → Missing deposit","Merchant portal → Login credential request","Order Protocol → Online issues"],"correct":1,"feedback":"A missing payout should be routed through the payment path that matches missing deposits.","tags":["Category calibration","Payment"],"critical":false,"originalQuestionId":"S14"},{"id":"EGB","type":"single","section":"Routing Calibration","stem":"The merchant can log in, but the bank update tool in the portal is blocked. The requested action is to fix the portal blocker. Which category is best?","options":["Payment → Bank Information Update","Merchant portal → Can't update bank info","Account settings → Email update","Data Reporting Request → Payment"],"correct":1,"feedback":"The issue is the portal tool blocking the bank update, so the category should follow the portal blocker rather than a standard bank information update request.","tags":["Category calibration","Merchant Portal"],"critical":false,"originalQuestionId":"S15"},{"id":"UTN","type":"single","section":"Routing Calibration","stem":"A merchant wants to switch how they receive orders from email to tablet. Which category is best?","options":["Order Protocol → Switch/alter Protocol","Tablet / Printer → Cracked/broken screen","Payment → Order discrepancies","Feedback → Website/App"],"correct":0,"feedback":"Switching how orders are received is an order protocol change, not a hardware damage issue.","tags":["Category calibration","Order Protocol"],"critical":false,"originalQuestionId":"S16"},{"id":"QDL","type":"single","section":"Routing Calibration","stem":"There is suspected unauthorized Merchant Portal access on an active merchant account. Which category is best from the approved taxonomy?","options":["Merchant portal → Fraud","Feedback → Company","Growth → Increase orders","Bulk Update → Payment"],"correct":0,"feedback":"Unauthorized portal access is a portal fraud concern and should not be routed as growth, feedback, or a bulk payment update.","tags":["Category calibration","Fraud","Critical safety"],"critical":true,"originalQuestionId":"S17"},{"id":"LSN","type":"single","section":"Merchant Need Discovery","stem":"A merchant says, “Orders are not coming through the tablet.” What should the Account Manager clarify before deciding the case path?","options":["Whether the issue is order-receiving protocol, tablet connectivity or software, physical damage, store status, or a point-of-sale connection issue.","Whether the merchant wants a marketing campaign.","The merchant’s personal social media password.","Nothing; all tablet comments use the same category."],"correct":0,"feedback":"The same word can point to different support paths. The Account Manager should clarify the actual merchant need before categorizing.","tags":["Discovery","Tool routing","Tablet"],"critical":false,"originalQuestionId":"S18"},{"id":"IMC","type":"multi","section":"Missing Information","stem":"A merchant says, “DoorDash charged me the wrong fee on an order.” Which details help make the case actionable? Select all that apply.","options":["Store identification number or business identification number","Order identification number or affected date range, if available","The fee or charge the merchant is questioning","What the merchant expected versus what they see","Screenshots or reporting references if available and allowed","The merchant’s password","A full bank account number"],"correct":[0,1,2,3,4],"feedback":"Fee or order discrepancy cases need the affected order or period, the disputed charge, and the merchant’s expected outcome.","tags":["Missing info","Payment facts","Critical safety"],"critical":false,"originalQuestionId":"S19"},{"id":"OFS","type":"match","section":"Next Best Action","stem":"Match each situation to the best Account Manager action.","prompts":[{"left":"Merchant forgot their portal password","right":"Use the appropriate password reset or credential path after confirming the authorized user"},{"left":"Same issue already has an open case","right":"Review and update the existing case instead of creating a duplicate"},{"left":"Support is waiting for specific missing information","right":"Collect only the requested information and update the case"},{"left":"Merchant is upset about lack of progress","right":"Acknowledge the frustration, provide factual status, and set the approved follow-up step"}],"choices":["Acknowledge the frustration, provide factual status, and set the approved follow-up step","Collect only the requested information and update the case","Use the appropriate password reset or credential path after confirming the authorized user","Review and update the existing case instead of creating a duplicate"],"feedback":"Support quality is not only category selection. It is understanding the need, using the right evidence, avoiding duplicates, and owning follow-up.","tags":["Follow-up","Merchant need","Figment"],"critical":false,"originalQuestionId":"S20"}],"duration":"30–45 minutes","themeNote":"DoorDash-style red, clean cards, and dark mode.","recipientEmail":"saul.chavez@ext.doordash.com","version":"v13_google_form_compact_safe"};
+const STORAGE_KEY = 'dd_am_assessment_' + moduleData.slug + '_v13_google_form_compact_safe';
+const recipientEmail = moduleData.recipientEmail;
+const GOOGLE_FORM_BACKEND = Object.assign({enabled:false, backend:'google-form', version:'v13-google-form-compact-safe', actionUrl:'', securityToken:'', entries:{}}, window.DD_ASSESSMENT_GOOGLE_FORM_CONFIG || {});
+let state = {
+  profile:{}, answers:{}, orderConfirmed:{}, submitted:false, submittedAt:null, attemptId:null, finalResult:null, theme:'light'
+};
+
+function load(){
+  try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw) state = {...state, ...JSON.parse(raw)}; }catch(e){ console.warn(e); }
+  if(!state.profile.attemptDate){ state.profile.attemptDate = new Date().toISOString().slice(0,10); }
+}
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1700); }
+function esc(s){ return String(s ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+function normSet(arr){ return [...new Set((arr||[]).map(String))].sort(); }
+function sameArray(a,b){ const aa=normSet(a), bb=normSet(b); return aa.length===bb.length && aa.every((v,i)=>v===bb[i]); }
+function today(){ return new Date().toISOString().slice(0,10); }
+
+function initTheme(){
+  document.documentElement.setAttribute('data-theme', state.theme || 'light');
+  document.getElementById('themeToggle').textContent = (state.theme === 'dark') ? 'Light mode' : 'Dark mode';
+}
+function toggleTheme(){ state.theme = (state.theme === 'dark') ? 'light' : 'dark'; save(); initTheme(); }
+
+function renderProfile(){
+  const ids = ['amName','cohort','trainer','attemptDate'];
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    el.value = state.profile[id] || (id==='attemptDate' ? today() : '');
+    el.addEventListener('input',()=>{ if(state.submitted) return; state.profile[id]=el.value; save(); });
+    el.disabled = !!state.submitted;
+  });
+}
+
+function isAnswered(q){
+  const a=state.answers[q.id];
+  if(q.type==='single') return a !== undefined && a !== null && a !== '';
+  if(q.type==='multi') return Array.isArray(a) && a.length>0;
+  if(q.type==='match') return a && q.prompts.every(p=>a[p.left]);
+  if(q.type==='order') return Array.isArray(a) && a.length===q.correct.length && state.orderConfirmed && state.orderConfirmed[q.id];
+  return false;
+}
+function scoreQuestion(q){
+  const a=state.answers[q.id];
+  if(q.type==='single') return Number(a)===q.correct ? 1 : 0;
+  if(q.type==='multi'){
+    const selected = new Set((a||[]).map(Number));
+    const correct = new Set(q.correct.map(Number));
+    const totalCorrect = correct.size || 1;
+    let truePos=0, falsePos=0;
+    selected.forEach(x=>{ if(correct.has(x)) truePos++; else falsePos++; });
+    return Math.max(0, Math.min(1, (truePos - falsePos) / totalCorrect));
+  }
+  if(q.type==='match'){
+    if(!a) return 0;
+    let ok=0;
+    q.prompts.forEach(p=>{ if(a[p.left] === p.right) ok++; });
+    return ok / q.prompts.length;
+  }
+  if(q.type==='order'){
+    if(!Array.isArray(a)) return 0;
+    let ok=0;
+    q.correct.forEach((item,i)=>{ if(a[i] === item) ok++; });
+    return ok / q.correct.length;
+  }
+  return 0;
+}
+function selectedText(q){
+  const a=state.answers[q.id];
+  if(q.type==='single') return q.options[Number(a)] ?? 'Not answered';
+  if(q.type==='multi') return (a||[]).map(i=>q.options[Number(i)]).join('; ') || 'Not answered';
+  if(q.type==='match') return q.prompts.map(p=>`${p.left} => ${(a&&a[p.left])||'Not answered'}`).join('; ');
+  if(q.type==='order') return (a||[]).map((x,i)=>`${i+1}. ${x}`).join('; ') || 'Not answered';
+  return '';
+}
+function correctText(q){
+  if(q.type==='single') return q.options[q.correct];
+  if(q.type==='multi') return q.correct.map(i=>q.options[i]).join('; ');
+  if(q.type==='match') return q.prompts.map(p=>`${p.left} => ${p.right}`).join('; ');
+  if(q.type==='order') return q.correct.map((x,i)=>`${i+1}. ${x}`).join('; ');
+  return '';
+}
+function answerStatus(q){ const s=scoreQuestion(q); if(s>=.999) return 'Correct'; if(s>0) return 'Partial'; return 'Incorrect'; }
+
+function ensureOrderAnswer(q){
+  if(!Array.isArray(state.answers[q.id]) || state.answers[q.id].length!==q.items.length){ state.answers[q.id]=[...q.items]; save(); }
+}
+
+function renderQuestions(){
+  const wrap=document.getElementById('questionsWrap');
+  let html='';
+  let lastSection='';
+  moduleData.questions.forEach((q,i)=>{
+    if(q.section !== lastSection){
+      html += `<div class="chip red" style="margin-top:18px">${esc(q.section)}</div>`;
+      lastSection = q.section;
+    }
+    html += renderQuestion(q,i);
+  });
+  wrap.innerHTML=html;
+  bindQuestionEvents();
+  updateProgress();
+  if(state.submitted){ lockAssessment(); showResults(false); }
+}
+function renderQuestion(q,i){
+  const qnum = i+1;
+  const answered = isAnswered(q);
+  const crit = '';
+  let body='';
+  if(q.type==='single'){
+    body = `<div class="options">${q.options.map((o,idx)=>{
+      const sel = Number(state.answers[q.id])===idx;
+      return `<label class="option ${sel?'selected':''}" data-qid="${q.id}" data-type="single" data-value="${idx}"><input type="radio" name="${q.id}" ${sel?'checked':''} ${state.submitted?'disabled':''}> <span>${esc(o)}</span></label>`;
+    }).join('')}</div>`;
+  } else if(q.type==='multi'){
+    const ans = new Set((state.answers[q.id]||[]).map(Number));
+    body = `<div class="options">${q.options.map((o,idx)=>{
+      const sel = ans.has(idx);
+      return `<label class="option ${sel?'selected':''}" data-qid="${q.id}" data-type="multi" data-value="${idx}"><input type="checkbox" ${sel?'checked':''} ${state.submitted?'disabled':''}> <span>${esc(o)}</span></label>`;
+    }).join('')}</div>`;
+  } else if(q.type==='match'){
+    const ans = state.answers[q.id]||{};
+    body = `<div class="match-table">${q.prompts.map((p,idx)=>`
+      <div class="match-row"><div class="prompt">${esc(p.left)}</div><select data-match-q="${q.id}" data-left="${esc(p.left)}" ${state.submitted?'disabled':''}><option value="">Choose best match</option>${q.choices.map(c=>`<option ${ans[p.left]===c?'selected':''}>${esc(c)}</option>`).join('')}</select></div>`).join('')}</div>`;
+  } else if(q.type==='order'){
+    ensureOrderAnswer(q);
+    const arr = state.answers[q.id];
+    body = `<div class="order-list" data-order-q="${q.id}">${arr.map((item,idx)=>`
+      <div class="order-item"><span class="num">${idx+1}</span><strong>${esc(item)}</strong><span class="move"><button class="iconbtn" data-move="up" data-q="${q.id}" data-index="${idx}" ${idx===0||state.submitted?'disabled':''}>↑</button><button class="iconbtn" data-move="down" data-q="${q.id}" data-index="${idx}" ${idx===arr.length-1||state.submitted?'disabled':''}>↓</button></span></div>`).join('')}<button class="btn secondary" style="justify-self:start;margin-top:8px" data-confirm-order="${q.id}" ${state.submitted?'disabled':''}>Confirm this order</button></div>`;
+  }
+  return `<article class="question" id="q${qnum}" data-qid="${q.id}">
+    <div class="qhead"><div class="qmeta"><span class="chip red">${qnum}.</span></div><span class="chip ${answered?'red':''}" id="status-${q.id}">${answered?'Answered':'Open'}</span></div>
+    <p class="qtitle">${esc(q.stem)}</p>
+    ${body}
+    <div class="feedback" id="fb-${q.id}"></div>
+  </article>`;
+}
+function bindQuestionEvents(){
+  document.querySelectorAll('.option').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      if(state.submitted) return;
+      const qid=el.dataset.qid;
+      const q=moduleData.questions.find(x=>x.id===qid);
+      const val=Number(el.dataset.value);
+      if(q.type==='single') state.answers[qid]=val;
+      else {
+        const set=new Set((state.answers[qid]||[]).map(Number));
+        if(set.has(val)) set.delete(val); else set.add(val);
+        state.answers[qid]=[...set].sort((a,b)=>a-b);
+      }
+      save(); renderQuestions();
+    });
+  });
+  document.querySelectorAll('[data-match-q]').forEach(sel=>{
+    sel.addEventListener('change',()=>{
+      if(state.submitted) return;
+      const qid=sel.dataset.matchQ; const left=sel.dataset.left;
+      state.answers[qid]=state.answers[qid]||{};
+      state.answers[qid][left]=sel.value;
+      save(); updateProgress();
+    });
+  });
+  document.querySelectorAll('[data-move]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(state.submitted) return;
+      const qid=btn.dataset.q; const idx=Number(btn.dataset.index); const dir=btn.dataset.move;
+      const arr=[...state.answers[qid]];
+      const swap = dir==='up' ? idx-1 : idx+1;
+      if(swap<0 || swap>=arr.length) return;
+      [arr[idx],arr[swap]]=[arr[swap],arr[idx]];
+      state.answers[qid]=arr; state.orderConfirmed=state.orderConfirmed||{}; state.orderConfirmed[qid]=true; save(); renderQuestions();
+    });
+  });
+  document.querySelectorAll('[data-confirm-order]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(state.submitted) return;
+      state.orderConfirmed=state.orderConfirmed||{}; state.orderConfirmed[btn.dataset.confirmOrder]=true; save(); renderQuestions();
+    });
+  });
+}
+function updateProgress(){
+  // Progress is tracked internally only. The assessment no longer shows a question map or total count to the Account Manager.
+  const answered = moduleData.questions.filter(isAnswered).length;
+  const pct = Math.round(answered/moduleData.questions.length*100);
+  const answeredEl = document.getElementById('answeredCount');
+  if(answeredEl) answeredEl.textContent = `${answered}/${moduleData.questions.length}`;
+  const textEl = document.getElementById('progressText');
+  if(textEl) textEl.textContent = pct+'%';
+  const barEl = document.getElementById('progressBar');
+  if(barEl) barEl.style.width = pct+'%';
+  renderQnav();
+}
+function renderQnav(){
+  const nav = document.getElementById('qnav');
+  if(nav) nav.innerHTML = '';
+}
+function lockAssessment(){
+  document.querySelectorAll('input,select,textarea').forEach(el=>{ if(el.id!=='reportBox') el.disabled=true; });
+  document.getElementById('finalizeBtn').disabled=true;
+  document.getElementById('saveBtn').disabled=true;
+  document.getElementById('clearBtn').disabled=true;
+  document.querySelectorAll('.question').forEach(q=>q.classList.add('locked'));
+}
+function calculate(){
+  const rows = moduleData.questions.map((q,i)=>({q,index:i,score:scoreQuestion(q),status:answerStatus(q)}));
+  const raw = rows.reduce((a,r)=>a+r.score,0);
+  const score = Math.round(raw / moduleData.questions.length * 100);
+  const breakdown={};
+  rows.forEach(r=>{
+    r.q.tags.forEach(tag=>{ if(!breakdown[tag]) breakdown[tag]={score:0,max:0}; breakdown[tag].score += r.score; breakdown[tag].max += 1; });
+  });
+  const criticalFlags=rows.filter(r=>r.q.critical && r.score<1).map(r=>({id:r.q.id, number:r.index+1, stem:r.q.stem, feedback:r.q.feedback, status:r.status}));
+  const sortedTags = Object.entries(breakdown).map(([tag,v])=>({tag, pct:Math.round(v.score/v.max*100), score:v.score, max:v.max})).sort((a,b)=>a.pct-b.pct);
+  return {score, raw, rows, breakdown:sortedTags, criticalFlags, submittedAt: state.submittedAt || new Date().toISOString()};
+}
+function band(score){
+  if(score<=30) return {title:'0–30 · Extensive review required', text:'Do not continue to live execution without structured review of the full module.'};
+  if(score<=59) return {title:'31–59 · Topic-by-topic calibration needed', text:'The Account Manager has foundations but needs calibration by topic before readiness sign-off.'};
+  if(score<=80) return {title:'60–80 · Focus on specific improvement areas', text: score>=80 ? 'Passing threshold reached at 80, but review the weakest categories and any critical flags before expanding scope.' : 'The Account Manager is close but should focus on targeted gaps and repeat scenario practice.'};
+  return {title:'81–100 · Strengths identified', text:'Use the result to identify strong areas and prepare for next-level execution, consistency, and peer support.'};
+}
+function finalize(){
+  if(state.submitted){ showResults(true); return; }
+  const missing = moduleData.questions.filter(q=>!isAnswered(q));
+  const requiredProfile=['amName','cohort','trainer','attemptDate'];
+  const missingProfile=requiredProfile.filter(id=>!(document.getElementById(id).value||'').trim());
+  if(missingProfile.length){ toast('Complete profile fields first.'); document.getElementById('profile').scrollIntoView({behavior:'smooth'}); return; }
+  if(missing.length){ toast('Answer all questions before finalizing.'); const idx=moduleData.questions.findIndex(q=>q.id===missing[0].id)+1; location.hash='q'+idx; return; }
+  ['amName','cohort','trainer','attemptDate'].forEach(id=>state.profile[id]=document.getElementById(id).value);
+  state.submitted=true;
+  state.submittedAt=new Date().toISOString();
+  state.attemptId = state.attemptId || `${moduleData.slug}-${state.submittedAt.replace(/[-:.TZ]/g,'').slice(0,14)}`;
+  state.finalResult=calculate();
+  save();
+  lockAssessment();
+  showResults(true);
+  toast('Assessment finalized.');
+}
+function showResults(scroll){
+  const result=calculate();
+  state.finalResult=result; save();
+  document.getElementById('results').classList.add('show');
+  document.getElementById('scorePill').textContent=result.score+'%';
+  const b=band(result.score);
+  const pass = result.score>=80 && result.criticalFlags.length===0;
+  const critText = result.criticalFlags.length ? `${result.criticalFlags.length} critical flag(s) require Team Lead calibration.` : 'No critical flags triggered.';
+  document.getElementById('resultSummary').innerHTML = `<div class="score-hero"><div class="score-circle">${result.score}<small>%</small></div><div><p class="band">${esc(b.title)}</p><p class="lede">${esc(b.text)}</p><div style="margin-top:12px"><span class="chip ${pass?'red':'warn'}">${pass?'Pass-ready':'Calibration needed'}</span><span class="chip ${result.criticalFlags.length?'danger':'red'}">${esc(critText)}</span></div></div></div><div class="submit-reminder">Important: your score is visible, but it is not registered yet. Click Submit results before closing this page.<small>After clicking Submit results, this page will leave GitHub and show the official Google Forms confirmation. Copy and download buttons are only backup tools for troubleshooting.</small></div>`;
+  renderBreakdown(result);
+  renderReview(result);
+  const report=buildReport(result);
+  document.getElementById('reportBox').value=report;
+  if(scroll) document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+function renderBreakdown(result){
+  const box=document.getElementById('breakdown');
+  const lows=result.breakdown.slice(0,6);
+  const highs=[...result.breakdown].sort((a,b)=>b.pct-a.pct).slice(0,6);
+  box.innerHTML = `<div class="grid two"><div><h3>Focus areas</h3>${lows.map(r=>barRow(r)).join('')}</div><div><h3>Strong areas</h3>${highs.map(r=>barRow(r)).join('')}</div></div>`;
+}
+function barRow(r){ return `<div class="brow"><strong>${esc(r.tag)}</strong><div class="bbar"><span style="width:${r.pct}%"></span></div><b>${r.pct}%</b></div>`; }
+function renderReview(result){
+  const review=document.getElementById('review');
+  review.innerHTML = '<h3>Question review</h3>' + result.rows.map(r=>{
+    const good=r.score>=.999;
+    const partial=r.score>0 && r.score<.999;
+    return `<div class="review-item ${good?'good':'bad'}"><div class="qmeta"><span class="chip red">${r.index+1}.</span><span class="chip ${good?'red': partial?'warn':'danger'}">${r.status} · ${Math.round(r.score*100)}%</span>${r.q.critical?'<span class="chip danger">Critical</span>':''}</div><p><b>${esc(r.q.stem)}</b></p><p><b>Your answer:</b> ${esc(selectedText(r.q))}</p><p><b>Correct / expected:</b> ${esc(correctText(r.q))}</p><p style="color:var(--muted)"><b>Feedback:</b> ${esc(r.q.feedback)}</p></div>`;
+  }).join('');
+}
+function buildReport(result){
+  result = result || calculate();
+  const p=state.profile;
+  const b=band(result.score);
+  const lows=result.breakdown.slice(0,5).map(x=>`${x.tag} ${x.pct}%`).join(', ') || 'None';
+  const highs=[...result.breakdown].sort((a,b)=>b.pct-a.pct).slice(0,5).map(x=>`${x.tag} ${x.pct}%`).join(', ') || 'None';
+  const crit=result.criticalFlags.length ? result.criticalFlags.map(f=>`${f.number}. ${f.stem}`).join('\n') : 'None';
+  const lines=[];
+  lines.push(`${moduleData.title} - Final Report`);
+  lines.push(`Attempt ID: ${state.attemptId || 'DRAFT-' + moduleData.slug}`);
+  lines.push(`Account Manager Name: ${p.amName || ''}`);
+  lines.push(`Cohort: ${p.cohort || ''}`);
+  lines.push(`Trainer: ${p.trainer || ''}`);
+  lines.push(`Date: ${p.attemptDate || ''}`);
+  lines.push(`Module: ${moduleData.moduleShort}`);
+  lines.push(`Submitted At: ${state.submittedAt || new Date().toISOString()}`);
+  lines.push('');
+  lines.push(`Score: ${result.score}/100`);
+  lines.push(`Band: ${b.title}`);
+  lines.push(`Interpretation: ${b.text}`);
+  lines.push(`Passing Threshold: 80+`);
+  lines.push(`Critical Flags: ${result.criticalFlags.length}`);
+  lines.push('');
+  lines.push(`Strong Areas: ${highs}`);
+  lines.push(`Focus Areas: ${lows}`);
+  lines.push('');
+  lines.push('Critical Flag Details:');
+  lines.push(crit);
+  lines.push('');
+  lines.push('Category Breakdown:');
+  result.breakdown.forEach(x=>lines.push(`- ${x.tag}: ${x.pct}%`));
+  lines.push('');
+  lines.push('Full Answer Review:');
+  result.rows.forEach(r=>{
+    lines.push(`\nQ${r.index+1}. ${r.q.stem}`);
+    lines.push(`Question format: ${r.q.type} | Tags: ${r.q.tags.join(', ')}${r.q.critical?' | CRITICAL':''}`);
+    lines.push(`Status: ${r.status} | Credit: ${Math.round(r.score*100)}%`);
+    lines.push(`Your answer: ${selectedText(r.q)}`);
+    lines.push(`Expected: ${correctText(r.q)}`);
+    lines.push(`Feedback: ${r.q.feedback}`);
+  });
+  lines.push('');
+  lines.push('Coaching note: Use this report with quality assurance, shadowing, and Team Lead calibration. The result is diagnostic and should support targeted coaching.');
+  return lines.join('\n');
+}
+async function copyReport(){
+  const report=document.getElementById('reportBox').value || buildReport();
+  try{ await navigator.clipboard.writeText(report); toast('Full report copied.'); }
+  catch(e){ const box=document.getElementById('reportBox'); box.focus(); box.select(); document.execCommand('copy'); toast('Report selected/copied.'); }
+}
+function downloadText(filename, text, type='text/plain'){
+  const blob=new Blob([text],{type}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+function buildSubmissionPayload(result){
+  result = result || calculate();
+  const report = document.getElementById('reportBox').value || buildReport(result);
+  return {
+    source: 'github-html-assessment-v13-google-form-compact',
+    moduleSlug: moduleData.slug,
+    module: moduleData.moduleShort,
+    attemptId: state.attemptId || ('DRAFT-' + moduleData.slug),
+    submittedAt: state.submittedAt || new Date().toISOString(),
+    profile: state.profile,
+    score: result.score,
+    passingThreshold: 80,
+    passed: result.score >= 80 && result.criticalFlags.length === 0,
+    criticalFlags: result.criticalFlags,
+    breakdown: result.breakdown,
+    answers: result.rows.map(r => ({
+      questionNumber: r.index + 1,
+      questionCode: r.q.id,
+      originalQuestionId: r.q.originalQuestionId || '',
+      section: r.q.section,
+      question: r.q.stem,
+      selectedAnswer: selectedText(r.q),
+      expectedAnswer: correctText(r.q),
+      status: r.status,
+      creditPercent: Math.round(r.score * 100),
+      feedback: r.q.feedback,
+      tags: r.q.tags,
+      critical: !!r.q.critical
+    })),
+    report: report,
+    secret: (formConfig().securityToken || '')
+  };
+}
+function openMailDraft(report, result){
+  const p=state.profile;
+  const subject=encodeURIComponent(`${moduleData.moduleShort} Assessment Results - ${p.amName || 'Account Manager'} - ${result.score}%`);
+  let body=report;
+  if(body.length>7000){
+    body = `Full report copied to clipboard. Please paste it into this email before sending.
+
+Summary:
+Account Manager: ${p.amName || ''}
+Cohort: ${p.cohort || ''}
+Trainer: ${p.trainer || ''}
+Date: ${p.attemptDate || ''}
+Module: ${moduleData.moduleShort}
+Score: ${result.score}/100
+Critical Flags: ${result.criticalFlags.length}
+Focus Areas: ${result.breakdown.slice(0,5).map(x=>x.tag+' '+x.pct+'%').join(', ')}
+`;
+  }
+  window.location.href=`mailto:${recipientEmail}?subject=${subject}&body=${encodeURIComponent(body)}`;
+}
+
+
+function formConfig(){
+  return Object.assign({enabled:false, backend:'google-form', version:'v13-google-form-compact-safe', actionUrl:'', securityToken:'', entries:{}}, window.DD_ASSESSMENT_GOOGLE_FORM_CONFIG || GOOGLE_FORM_BACKEND || {});
+}
+function chunkText(text, size, maxChunks){
+  const chunks=[];
+  const source=String(text || '');
+  for(let i=0; i<maxChunks; i++){
+    chunks.push(source.slice(i*size, (i+1)*size));
+  }
+  return chunks;
+}
+function shortText(value, max){
+  const text = String(value ?? '').replace(/\s+/g,' ').trim();
+  if(!max || text.length <= max) return text;
+  return text.slice(0, Math.max(0, max - 1)).trim() + '…';
+}
+function compactAnswerRow(r, limits){
+  const q = r.q;
+  return {
+    questionNumber: r.index + 1,
+    questionCode: q.id,
+    originalQuestionId: q.originalQuestionId || '',
+    section: shortText(q.section || '', 70),
+    question: shortText(q.stem || '', limits.question),
+    selectedAnswer: shortText(selectedText(q), limits.selected),
+    expectedAnswer: shortText(correctText(q), limits.expected),
+    status: r.status,
+    creditPercent: Math.round(r.score * 100),
+    feedback: limits.feedback ? shortText(q.feedback || '', limits.feedback) : '',
+    tags: q.tags || [],
+    critical: !!q.critical
+  };
+}
+function buildCompactGoogleFormPayload(payload, result){
+  const p = state.profile || {};
+  const base = {
+    backendVersion: 'v13-google-form-compact-safe',
+    source: 'github-html-assessment-v13-google-form-compact',
+    moduleSlug: payload.moduleSlug || moduleData.slug,
+    module: payload.module || moduleData.moduleShort,
+    attemptId: payload.attemptId || '',
+    submittedAt: payload.submittedAt || new Date().toISOString(),
+    profile: {
+      amName: p.amName || '',
+      cohort: p.cohort || '',
+      trainer: p.trainer || '',
+      attemptDate: p.attemptDate || ''
+    },
+    score: payload.score,
+    passingThreshold: payload.passingThreshold || 80,
+    passed: !!payload.passed,
+    criticalFlags: (result.criticalFlags || []).map(c => ({
+      number: c.number,
+      questionCode: c.id,
+      status: c.status
+    })),
+    breakdown: (result.breakdown || []).map(x => ({
+      tag: shortText(x.tag, 70),
+      pct: Number(x.pct || 0)
+    }))
+  };
+
+  const limitSets = [
+    {question: 120, selected: 160, expected: 160, feedback: 100},
+    {question: 95, selected: 120, expected: 120, feedback: 0},
+    {question: 60, selected: 80, expected: 80, feedback: 0}
+  ];
+
+  for(const limits of limitSets){
+    const candidate = Object.assign({}, base, {
+      answers: result.rows.map(r => compactAnswerRow(r, limits))
+    });
+    if(JSON.stringify(candidate).length <= 10500){
+      return candidate;
+    }
+  }
+
+  // Last-resort ultra-compact payload. This should still preserve analytics by module, question code, tag, correctness, and critical flags.
+  return Object.assign({}, base, {
+    answers: result.rows.map(r => ({
+      questionNumber: r.index + 1,
+      questionCode: r.q.id,
+      originalQuestionId: r.q.originalQuestionId || '',
+      section: shortText(r.q.section || '', 50),
+      question: shortText(r.q.stem || '', 50),
+      selectedAnswer: shortText(selectedText(r.q), 60),
+      expectedAnswer: shortText(correctText(r.q), 60),
+      status: r.status,
+      creditPercent: Math.round(r.score * 100),
+      feedback: '',
+      tags: r.q.tags || [],
+      critical: !!r.q.critical
+    }))
+  });
+}
+function googleFormSummaryFields(payload, result){
+  const b=band(result.score);
+  const lows=result.breakdown.slice(0,5).map(x=>`${x.tag} ${x.pct}%`).join(', ') || 'None';
+  const highs=[...result.breakdown].sort((a,b)=>b.pct-a.pct).slice(0,5).map(x=>`${x.tag} ${x.pct}%`).join(', ') || 'None';
+  const p=state.profile || {};
+  const compactPayload = buildCompactGoogleFormPayload(payload, result);
+  const payloadJson=JSON.stringify(compactPayload);
+  const chunks=chunkText(payloadJson, 950, 12);
+  const fields={
+    backendVersion:'v13-google-form-compact-safe',
+    securityToken:formConfig().securityToken || '',
+    attemptId:payload.attemptId || '',
+    source:'github-html-assessment-v13-google-form-compact',
+    moduleSlug:payload.moduleSlug || '',
+    module:payload.module || '',
+    amName:p.amName || '',
+    cohort:p.cohort || '',
+    trainer:p.trainer || '',
+    assessmentDate:p.attemptDate || '',
+    submittedAt:payload.submittedAt || new Date().toISOString(),
+    score:String(payload.score),
+    passingThreshold:String(payload.passingThreshold || 80),
+    passed:payload.passed ? 'true' : 'false',
+    criticalFlagsCount:String((payload.criticalFlags || []).length),
+    scoreBand:b.title,
+    strongAreas:shortText(highs, 800),
+    focusAreas:shortText(lows, 800)
+  };
+  for(let i=1;i<=12;i++){
+    // A single blank space keeps optional/required Form fields non-empty while still parsing as JSON whitespace when chunks are joined.
+    fields['payloadChunk' + String(i).padStart(2,'0')] = chunks[i-1] || ' ';
+  }
+  return fields;
+}
+function validateGoogleFormConfig(config){
+  if(!config || !config.enabled || !config.actionUrl || !config.entries){ return false; }
+  const required=['backendVersion','securityToken','attemptId','moduleSlug','module','amName','cohort','trainer','assessmentDate','submittedAt','score','passed','criticalFlagsCount','scoreBand','strongAreas','focusAreas','payloadChunk01'];
+  return required.every(key => !!config.entries[key]);
+}
+
+function postToGoogleForm(fields){
+  const config=formConfig();
+  if(!validateGoogleFormConfig(config)){
+    throw new Error('Google Form backend is not configured.');
+  }
+
+  const form=document.createElement('form');
+  form.method='POST';
+  form.action=config.actionUrl;
+  form.target='_self';
+  form.enctype='application/x-www-form-urlencoded';
+  form.acceptCharset='UTF-8';
+  form.style.position='absolute';
+  form.style.left='-9999px';
+  form.style.width='1px';
+  form.style.height='1px';
+  form.setAttribute('aria-hidden','true');
+
+  const addField=(name,value)=>{
+    const input=document.createElement('textarea');
+    input.name=name;
+    input.value=String(value ?? '');
+    form.appendChild(input);
+  };
+
+  Object.entries(fields).forEach(([key,value])=>{
+    const entry=config.entries[key];
+    if(!entry) return;
+    addField(entry, value);
+  });
+
+  // Google Forms needs page history for simple single-page forms.
+  // Do not create an input named "submit" because it shadows form.submit() in browsers.
+  addField('pageHistory','0');
+
+  document.body.appendChild(form);
+
+  // Use the native prototype submit method so the submission cannot be broken by any field name.
+  // This navigates the current tab to the official Google Forms confirmation page and avoids pop-up blockers.
+  HTMLFormElement.prototype.submit.call(form);
+}
+async function emailResults(){
+  if(!state.submitted){ toast('Finalize the assessment before submitting results.'); return; }
+  const result=calculate();
+  const payload=buildSubmissionPayload(result);
+  const btn=document.getElementById('emailBtn');
+  const originalText=btn ? btn.textContent : '';
+  if(btn){ btn.disabled=true; btn.textContent='Submitting to Google Forms...'; }
+  try{
+    const fields=googleFormSummaryFields(payload, result);
+    state.resultsSubmittedAt = new Date().toISOString();
+    save();
+    postToGoogleForm(fields);
+
+    // If the browser does not navigate for any reason, restore the button and show a backup instruction.
+    setTimeout(()=>{
+      if(document.visibilityState === 'visible'){
+        if(btn){ btn.disabled=false; btn.textContent=originalText || 'Submit results'; }
+        alert('The assessment tried to submit in this same tab. If you did not see the official Google Forms message "Your response has been recorded," use Copy full report or Download report, then contact your trainer or Team Lead.');
+      }
+    }, 6000);
+  }catch(err){
+    console.warn('Google Form submission failed.', err);
+    if(btn){ btn.disabled=false; btn.textContent=originalText || 'Submit results'; }
+    alert('The assessment is finalized, but the Google Form could not be submitted. Do not close this page. Use Copy full report or Download report, then contact your trainer or Team Lead.');
+  }
+}
+
+function clearProgress(){
+  if(state.submitted){ toast('Submitted attempt is locked locally.'); return; }
+  if(confirm('Clear local progress for this assessment?')){ localStorage.removeItem(STORAGE_KEY); location.reload(); }
+}
+function bind(){
+  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+  document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+  document.getElementById('saveBtn').addEventListener('click', ()=>{save(); toast('Progress saved.');});
+  document.getElementById('clearBtn').addEventListener('click', clearProgress);
+  document.getElementById('finalizeBtn').addEventListener('click', finalize);
+  document.getElementById('copyBtn').addEventListener('click', copyReport);
+  document.getElementById('emailBtn').addEventListener('click', emailResults);
+  document.getElementById('downloadBtn').addEventListener('click', ()=>downloadText(`${moduleData.slug}_assessment_report.txt`, document.getElementById('reportBox').value || buildReport()));
+  document.getElementById('jsonBtn').addEventListener('click', ()=>downloadText(`${moduleData.slug}_assessment_result.json`, JSON.stringify(buildSubmissionPayload(calculate()), null, 2), 'application/json'));
+}
+function init(){
+  load(); initTheme(); renderProfile(); renderQuestions(); bind(); updateProgress(); if(state.submitted) showResults(false);
+}
+init();
+</script>
+</body>
+</html>
